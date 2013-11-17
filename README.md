@@ -14,7 +14,7 @@ Try the [OAuth Popup add-on demo](http://130.230.142.91:8080/oauthpopup/).
 ## Add-on
 
 Available as an [add-on in Vaadin
-Directory](http://vaadin.com/addon/oauth-popup).
+Directory](http://vaadin.com/addon/oauth-popup-add-on).
 
 
 ## Description
