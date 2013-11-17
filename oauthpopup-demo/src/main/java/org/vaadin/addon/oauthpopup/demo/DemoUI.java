@@ -74,7 +74,7 @@ public class DemoUI extends UI {
 		addFacebookButton();
 		addLinkedInButton();
 		
-		layout.addComponent(new Link("Add-on at Vaadin Directory", new ExternalResource("http://vaadin.com/addon/oauthpopup")));
+		layout.addComponent(new Link("Add-on at Vaadin Directory", new ExternalResource("http://vaadin.com/addon/oauth-popup-add-on")));
 		layout.addComponent(new Link("Source code at GitHub", new ExternalResource("https://github.com/ahn/vaadin-oauthpopup")));
 	}
 	
