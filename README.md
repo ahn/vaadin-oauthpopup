@@ -101,16 +101,20 @@ Contributions are appreciated as well. Process for contributing is the following
 
 ## Building and running demo
 
-```
-git clone https://github.com/ahn/vaadin-oauthpopup.git
-cd vaadin-oauthpopup
-mvn clean install
-cd demo
-mvn jetty:run
-```
+To get, compile and run the project:
+
+    git clone https://github.com/ahn/vaadin-oauthpopup.git
+    cd vaadin-oauthpopup
+    mvn clean install
+    cd oauthpopup-demo
+    mvn jetty:run
 
 To see the demo, navigate to http://localhost:8080/
 
+To create an addon package that can be uploaded to Vaadin Directory
+
+    cd oauthpopup
+    mvn clean package assembly:single
 
 ## About implementation
 
