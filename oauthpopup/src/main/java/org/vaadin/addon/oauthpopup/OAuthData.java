@@ -19,9 +19,6 @@ import org.scribe.oauth.OAuthService;
  * <p>
  * Works as an intermediary between two browser windows:
  * the OAuthPopup window and the Vaadin window containing the OAuthPopupButton.
- * <p>
- * This object is only needed during the OAuth process
- * and shall be deleted when either authSuccessful or authFailed has been fired.
  */
 public class OAuthData {
 	
