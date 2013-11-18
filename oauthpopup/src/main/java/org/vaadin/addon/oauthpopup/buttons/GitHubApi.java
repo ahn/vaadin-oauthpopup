@@ -10,8 +10,10 @@ import org.scribe.model.OAuthConfig;
  */
 public class GitHubApi extends DefaultApi20 {
 
-	private static final String ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token";
-	private static final String AUTHORIZE_URL = "https://github.com/login/oauth/authorize";
+	private static final String ACCESS_TOKEN_URL =
+			"https://github.com/login/oauth/access_token";
+	private static final String AUTHORIZE_URL_FORMAT =
+			"https://github.com/login/oauth/authorize?client_id=%s";
 	
 	@Override
 	public String getAccessTokenEndpoint() {
@@ -20,10 +22,14 @@ public class GitHubApi extends DefaultApi20 {
 
 	@Override
 	public String getAuthorizationUrl(OAuthConfig config) {
-		String url = AUTHORIZE_URL+"?client_id="+config.getApiKey();
+		String url = String.format(AUTHORIZE_URL_FORMAT, config.getApiKey());
+		String callback = config.getCallback();
+		if (callback!=null) {
+			url += "&redirect_uri="+callback;
+		}
 		String scope = config.getScope();
 		if (scope!=null) {
-			return url + "&scope="+scope;
+			url += "&scope="+scope;
 		}
 		return url;
 	}
