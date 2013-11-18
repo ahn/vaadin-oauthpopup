@@ -36,22 +36,15 @@ import com.vaadin.ui.CustomComponent;
 // I guess we might have as well just inherit Button, not CustomComponent...
 public class OAuthPopupButton extends CustomComponent {
 	
-	private LinkedList<OAuthListener> listeners = new LinkedList<OAuthListener>();
-
-	private OAuthData data;
 	
-	private boolean useDefaultCallback = true;
-		
+	private final OAuthPopupOpener opener;
+	
 	private Button button;
-	
-	private BrowserWindowOpener opener;
-	private String popupFeatures;
-	
-	private OAuthListener dataListener;
 
 	public OAuthPopupButton(Class<? extends Api> apiClass, String key, String secret) {
-		this.data = new OAuthData(apiClass, key, secret);
+		this.opener = new OAuthPopupOpener(apiClass, key, secret);
 		button = new Button();
+		opener.extend(button);
 		setCompositionRoot(button);
 	}
 	
@@ -66,7 +59,7 @@ public class OAuthPopupButton extends CustomComponent {
 	 *  So, it's good idea to enable @Push in the UI class.
 	 */
 	public void addOAuthListener(OAuthListener listener) {
-		listeners.add(listener);
+		opener.addOAuthListener(listener);
 	}
 	
 	/**
@@ -76,7 +69,7 @@ public class OAuthPopupButton extends CustomComponent {
 	 *  So, it's good idea to enable @Push in the UI class.
 	 */
 	public void removeListener(OAuthListener listener) {
-		listeners.remove(listener);
+		opener.removeOAuthListener(listener);
 	}
 	
 	@Override
@@ -94,47 +87,6 @@ public class OAuthPopupButton extends CustomComponent {
 		button.setIcon(icon);
 	}
 	
-	@Override
-	public void attach() {
-		super.attach();
-				
-		if (useDefaultCallback) {
-			setCallbackToDefault();
-		}
-		
-		setOpener(createOpener());
-
-		// Setting oauth data as a session attribute for the popup to use...
-		String attr = data.getSessionAttributeName();
-		getSession().setAttribute(attr, data);
-		
-		// ...and letting the popup know the name of the attribute.
-		opener.setParameter("data", attr);
-		
-		dataListener = new OAuthListener() {
-			@Override
-			public void authSuccessful(String accessToken, String accessTokenSecret) {
-				fireAuthSuccessful(accessToken, accessTokenSecret);
-			}
-			
-			@Override
-			public void authDenied(String reason) {
-				fireAuthFailed(reason);
-			}
-		};
-		data.addListener(dataListener);
-	}
-	
-	@Override
-	public void detach() {
-		super.detach();
-		
-		data.removeListener(dataListener);
-		
-		// Deleting the session attribute.
-		getSession().setAttribute(data.getSessionAttributeName(), null);
-	}
-	
 	/**
 	 * Comma-separated list of features given to the BrowserWindowOpener.
 	 * <p>
@@ -142,14 +94,7 @@ public class OAuthPopupButton extends CustomComponent {
 	 * 
 	 */
 	public void setPopupWindowFeatures(String features) {
-		if (features==null ? popupFeatures==null : features.equals(popupFeatures)) {
-			return;
-		}
-		popupFeatures = features;
-		if (isAttached()) {
-			// If we're already attached, have to create a new opener.
-			setOpener(createOpener());
-		}
+		opener.setFeatures(features);
 	}
 	
 	/**
@@ -161,10 +106,8 @@ public class OAuthPopupButton extends CustomComponent {
 	 * 
 	 */
 	public void setCallback(String callback) {
-		useDefaultCallback = false;
-		data.setCallback(callback);
+		opener.setCallback(callback);
 	}
-
 	
 	/**
 	 * Sets the callback URI to default.
@@ -174,62 +117,11 @@ public class OAuthPopupButton extends CustomComponent {
 	 * 	
 	 */
 	public void setCallbackToDefault() {
-		useDefaultCallback = true;
-		if (isAttached()) {
-			setCallback(getDefaultCallback());
-		}
-		// if not attached, have to wait till attach() where we have the Page location.
+		opener.setCallbackToDefault();
 	}
 	
 	public void setScope(String scope) {
-		data.setScope(scope);
+		opener.setScope(scope);
 	}
-	
-	private BrowserWindowOpener createOpener() {
-		BrowserWindowOpener opener = new BrowserWindowOpener(OAuthPopupUI.class);
-		opener.setFeatures(popupFeatures);
-		return opener;
-	}
-	
-	private void setOpener(BrowserWindowOpener opener) {
-		if (this.opener!=null) {
-			this.opener.remove();
-		}
-		this.opener = opener;
-		opener.extend(button);
-	}
-	
-	private static String getDefaultCallback() {
-		URI u = Page.getCurrent().getLocation();
-		return u.getScheme()+"://"+u.getAuthority()+u.getPath();
-	}
-	
-	private void fireAuthSuccessful(final String accessToken, final String accessTokenSecret) {
-		// Coming from different thread than the usual Vaadin server visit.
-		// That's why we have to call access (TODO: session or UI?)
-		// Doing this here so our listeners don't need to.
-		VaadinSession session = getSession();
-		session.access(new Runnable() {
-			@Override
-			public void run() {
-				for (final OAuthListener li : listeners) {
-					li.authSuccessful(accessToken, accessTokenSecret);
-				}
-			}
-		});
-	}
-	
-	private void fireAuthFailed(final String reason) {
-		getSession().access(new Runnable() {
-			@Override
-			public void run() {
-				for (final OAuthListener li : listeners) {
-					li.authDenied(reason);
-				}
-
-			}
-		});
-	}
-
 	
 }
