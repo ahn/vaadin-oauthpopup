@@ -8,6 +8,8 @@ import org.scribe.builder.api.TwitterApi;
 import org.vaadin.addon.oauthpopup.OAuthListener;
 import org.vaadin.addon.oauthpopup.OAuthPopupButton;
 import org.vaadin.addon.oauthpopup.buttons.FacebookButton;
+import org.vaadin.addon.oauthpopup.buttons.GitHubApi;
+import org.vaadin.addon.oauthpopup.buttons.GitHubButton;
 import org.vaadin.addon.oauthpopup.buttons.LinkedInButton;
 import org.vaadin.addon.oauthpopup.buttons.TwitterButton;
 
@@ -60,6 +62,12 @@ public class DemoUI extends UI {
 			"bp0aa1rxk2re",
 			"Q2Na42cZmVs3OWnI",
 			"https://api.linkedin.com/v1/people/~");
+	
+	private static final ApiInfo GITHUB_API = new ApiInfo("GitHub",
+			GitHubApi.class,
+			"97a7e251c538106e7922",
+			"6a36b0992e5e2b00a38c44c21a6e0dc8ae01d83b",
+			"https://api.github.com/user");
 
 	private final VerticalLayout layout = new VerticalLayout();
 
@@ -73,6 +81,7 @@ public class DemoUI extends UI {
 		addTwitterButton();
 		addFacebookButton();
 		addLinkedInButton();
+		addGitHubButton();
 		
 		layout.addComponent(new Link("Add-on at Vaadin Directory", new ExternalResource("http://vaadin.com/addon/oauth-popup-add-on")));
 		layout.addComponent(new Link("Source code at GitHub", new ExternalResource("https://github.com/ahn/vaadin-oauthpopup")));
@@ -93,6 +102,12 @@ public class DemoUI extends UI {
 	private void addLinkedInButton() {
 		ApiInfo api = LINKEDIN_API;
 		OAuthPopupButton button = new LinkedInButton(api.apiKey, api.apiSecret);
+		addButton(api, button);
+	}
+	
+	private void addGitHubButton() {
+		ApiInfo api = GITHUB_API;
+		OAuthPopupButton button = new GitHubButton(api.apiKey, api.apiSecret);
 		addButton(api, button);
 	}
 
