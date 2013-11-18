@@ -1,5 +1,7 @@
 package org.vaadin.addon.oauthpopup;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -8,7 +10,6 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.exceptions.OAuthException;
 import org.scribe.model.OAuthConfig;
-import org.scribe.model.ParameterList;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
@@ -21,8 +22,6 @@ import org.scribe.oauth.OAuthService;
  * the OAuthPopup window and the Vaadin window containing the OAuthPopupButton.
  */
 public class OAuthData {
-	
-	public static final String ID_PARAM_NAME_IN_CALLBACK = "vaadinoauthpopupbuttonid";
 	
 	static long latestId = 0;
 	synchronized public String nextId() {
@@ -92,17 +91,25 @@ public class OAuthData {
 	}
 	
 	synchronized public void setCallback(String callback) {
-		this.callback = appendIdToCallback(callback);
+		try {
+			this.callback = appendIdToCallback(callback);
+		} catch (URISyntaxException e) {
+			throw new OAuthException("Invalid callback URI syntax: " + callback, e);
+		}
 	}
 	
 	/**
-	 * Appends the id to the callback, so that the callback request handler knows
-	 * to which data the callback relates to.
+	 * Appends the "/oauthpopupcallback/ID" to the callback path
+	 * so that the {@link OAuthCallbackRequestHandler} knows that it
+	 * should handle the callback.
 	 */
-	private String appendIdToCallback(String callback) {
-		ParameterList pl = new ParameterList();
-		pl.add(ID_PARAM_NAME_IN_CALLBACK, getId());
-		return pl.appendTo(callback);
+	private String appendIdToCallback(String callback) throws URISyntaxException {
+		URI old = new URI(callback);
+		String oldPath = old.getPath();
+		String idPath = OAuthCallbackRequestHandler.CALLBACK_PATH+"/"+getId();
+		String newPath = oldPath.endsWith("/") ? oldPath+idPath : oldPath+"/"+idPath;
+		URI newUri = new URI(old.getScheme(), old.getAuthority(), newPath, old.getQuery(), old.getFragment());
+		return newUri.toASCIIString();
 	}
 	
 	synchronized public String getScope() {

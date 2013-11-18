@@ -1,14 +1,8 @@
 package org.vaadin.addon.oauthpopup;
 
-import java.net.URI;
-import java.util.LinkedList;
-
 import org.scribe.builder.api.Api;
 
-import com.vaadin.server.BrowserWindowOpener;
-import com.vaadin.server.Page;
 import com.vaadin.server.Resource;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 
@@ -101,6 +95,10 @@ public class OAuthPopupButton extends CustomComponent {
 	 * Sets the callback URI for the OAuth.
 	 * <p>
 	 * Must be called before user opens the popup to have effect.
+	 * <p>
+	 * NOTE: OAuth Popup addon automatically adds "/oauthpopupcallback/X"
+	 * to the end of the callback path.
+	 * That's to let the callback handler know that it should handle the request.
 	 * <p>
 	 * Default: see {@link #setCallbackToDefault()}
 	 * 

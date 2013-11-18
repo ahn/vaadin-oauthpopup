@@ -13,20 +13,25 @@ import com.vaadin.server.VaadinSession;
 /**
  * Handles the callback from the OAuth authorization url.
  * <p>
+ * Only handles requests where the path ends with "/oauthpopupcallback/ID"
+ * where ID is what OAuthData.getId() returns.
+ * <p>
  * When done, closes the window and removes this handler.
  *
  */
 @SuppressWarnings("serial")
 public class OAuthCallbackRequestHandler implements RequestHandler {
 
+	public static final String CALLBACK_PATH = "oauthpopupcallback";
+	
 	private final Token requestToken;
 	private final OAuthData data;
 
 	private static final String CLOSE_WINDOW_HTML =
-			"<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"/>"
-			+ "<script>window.close();</script>"
-			+ "</head>"
-			+ "<body></body></html>";
+			"<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"/>" +
+			"<script>window.close();</script>" +
+			"</head><body>" +
+			"</body></html>";
 
 	/**
 	 * Only handles request that match the requestToken and data id.
@@ -43,12 +48,10 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 	public boolean handleRequest(VaadinSession session,
 			VaadinRequest request, VaadinResponse response) throws IOException {
 		
-		String dataId = request.getParameter(OAuthData.ID_PARAM_NAME_IN_CALLBACK);
-		if (!data.getId().equals(dataId)) {
-			// The id's don't match => this callback is not for me.
+		if (!pathForMe(request.getPathInfo())) {
 			return false;
 		}
-
+				
 		String reqTok = request.getParameter("oauth_token");
 		if (reqTok != null && requestToken != null && !reqTok.equals(requestToken.getToken())) {
 			// My token is different from the token in callback URL parameter
@@ -90,6 +93,23 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 		return true;
 	}
 	
+	private boolean pathForMe(String path) {
+		if (path==null) {
+			return false;
+		}
+		String[] pathParts = path.split("/");
+		int len = pathParts.length;
+		if (len < 2) {
+			return false;
+		}
+		String nextToLast = pathParts[len-2];
+		if (!CALLBACK_PATH.equals(nextToLast)) {
+			return false;
+		}
+		String last = pathParts[len-1];
+		return data.getId().equals(last);
+	}
+
 	private void finish(VaadinSession session, VaadinResponse response) throws IOException {
 		response.setContentType("text/html");
 		response.getWriter().append(CLOSE_WINDOW_HTML);

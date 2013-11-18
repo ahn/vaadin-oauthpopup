@@ -7,7 +7,6 @@ import org.scribe.builder.api.Api;
 
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.server.Page;
-import com.vaadin.server.VaadinSession;
 
 @SuppressWarnings("serial")
 public class OAuthPopupOpener extends BrowserWindowOpener {
