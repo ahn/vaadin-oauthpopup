@@ -5,7 +5,7 @@
 	<groupId>org.vaadin.addon</groupId>
 	<artifactId>oauthpopup</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>OAuth Popup Add-on</name>
 
 	<properties>
