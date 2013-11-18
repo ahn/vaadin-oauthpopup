@@ -7,6 +7,7 @@ import org.scribe.builder.api.LinkedInApi;
 import org.scribe.builder.api.TwitterApi;
 import org.vaadin.addon.oauthpopup.OAuthListener;
 import org.vaadin.addon.oauthpopup.OAuthPopupButton;
+import org.vaadin.addon.oauthpopup.OAuthPopupOpener;
 import org.vaadin.addon.oauthpopup.buttons.FacebookButton;
 import org.vaadin.addon.oauthpopup.buttons.GitHubApi;
 import org.vaadin.addon.oauthpopup.buttons.GitHubButton;
@@ -26,6 +27,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -83,6 +86,8 @@ public class DemoUI extends UI {
 		addLinkedInButton();
 		addGitHubButton();
 		
+		addTwitterNativeButton();
+		
 		layout.addComponent(new Link("Add-on at Vaadin Directory", new ExternalResource("http://vaadin.com/addon/oauth-popup-add-on")));
 		layout.addComponent(new Link("Source code at GitHub", new ExternalResource("https://github.com/ahn/vaadin-oauthpopup")));
 	}
@@ -109,6 +114,29 @@ public class DemoUI extends UI {
 		ApiInfo api = GITHUB_API;
 		OAuthPopupButton button = new GitHubButton(api.apiKey, api.apiSecret);
 		addButton(api, button);
+	}
+	
+	private void addTwitterNativeButton() {
+		final NativeButton b = new NativeButton("Another Twitter Auth Button");
+		
+		OAuthPopupOpener opener = new OAuthPopupOpener(
+				TWITTER_API.scribeApi, 
+				TWITTER_API.apiKey,
+				TWITTER_API.apiSecret);
+		opener.extend(b);
+		opener.addOAuthListener(new OAuthListener() {
+			@Override
+			public void authSuccessful(String accessToken, String accessTokenSecret) {
+				Notification.show("authSuccessful");
+			}
+			
+			@Override
+			public void authDenied(String reason) {
+				Notification.show("authDenied");
+			}
+		});
+		
+		layout.addComponent(b);
 	}
 
 	private void addButton(final ApiInfo service, OAuthPopupButton button) {
