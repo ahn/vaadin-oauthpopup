@@ -82,10 +82,9 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 	
 	private void fireAuthSuccessful(final String accessToken, final String accessTokenSecret) {
 		// Coming from different thread than the usual Vaadin server visit.
-		// That's why we have to call access (TODO: session or UI?)
+		// That's why we have to call access (TODO: session or UI?, seems like UI is correct.)
 		// Doing this here so our listeners don't need to.
-		VaadinSession session = getSession();
-		session.access(new Runnable() {
+		getUI().access(new Runnable() {
 			@Override
 			public void run() {
 				for (final OAuthListener li : listeners) {
@@ -96,7 +95,7 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 	}
 	
 	private void fireAuthFailed(final String reason) {
-		getSession().access(new Runnable() {
+		getUI().access(new Runnable() {
 			@Override
 			public void run() {
 				for (final OAuthListener li : listeners) {
