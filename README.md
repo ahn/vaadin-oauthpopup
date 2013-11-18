@@ -79,6 +79,8 @@ that are redirected to the BrowserWindowOpener of the button.
 ob.setPopupWindowFeatures("resizable,width=400,height=300");
 ```
 
+If you like to use some component other than button to open the popup window,
+you can extend any component with a `OAuthPopupOpener`.
 
 ## Roadmap
 
@@ -120,9 +122,9 @@ To create an addon package that can be uploaded to Vaadin Directory
 
 The basic flow goes as follows:
 
-1. When `OAuthPopupButton` is attached, it
+1. `OAuthPopupButton` extends itself with `OAuthPopupOpener`
+1. When `OAuthPopupOpener` is attached, it
     * stores a `OAuthData` instance as a session attribute, for other windows to read
-    * attaches a `BrowserWindowOpener` to itself
 2. When the button is clicked, the opener opens a `OAuthPopupUI` in a new window
 3. The `OAuthPopupUI`
     * reads the `OAuthData` from the session attribute
@@ -130,8 +132,8 @@ The basic flow goes as follows:
     * redirects the user to the OAuth authorization URL
 4. When the user returns from the authorization URL to our callback URL:
     * the `OAuthCallbackRequestHandler` is no longer needed, and is removed from session
-    * the `OAuthListener`s of the button are called, either `authSuccessful` or `authFailed` 
-5. When the `OAuthButton` is detached, it clears the session attribute where the `OAuthData` was
+    * the `OAuthListener`s of are called, either `authSuccessful` or `authFailed` 
+5. When the `OAuthPopupOpener` is detached, it clears the session attribute where the `OAuthData` was
 
 
 ## License
