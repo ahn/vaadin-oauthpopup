@@ -171,10 +171,7 @@ public class OAuthData {
 	
 	public OAuthException createException(String msg, OAuthException e) {
 		return new OAuthException(msg
-				+ "\nAre you sure API KEY and API SECRET are correct?"
-				+ "\nAPI: " + getApiClass().getSimpleName()
-				+ "\nAPI KEY: " + getApiKey()
-				+ "\nAPI SECRET: " + getApiSecret()
+				+ "\nUsing Scribe API: " + getApiClass().getSimpleName()
 				+ "\n", e);
 	}
 	
