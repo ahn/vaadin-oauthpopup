@@ -13,17 +13,12 @@ import com.vaadin.server.VaadinSession;
 /**
  * Handles the callback from the OAuth authorization url.
  * <p>
- * Only handles requests where the path ends with "/oauthpopupcallback/ID"
- * where ID is what OAuthData.getId() returns.
- * <p>
  * When done, closes the window and removes this handler.
  *
  */
 @SuppressWarnings("serial")
 public class OAuthCallbackRequestHandler implements RequestHandler {
 
-	
-	
 	private final Token requestToken;
 	private final OAuthData data;
 
@@ -34,7 +29,7 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 			"</body></html>";
 
 	/**
-	 * Only handles request that match the requestToken and data id.
+	 * Only handles request that match the data id.
 	 * 
 	 * @param requestToken may be null (in case of OAuth2)
 	 * @param data

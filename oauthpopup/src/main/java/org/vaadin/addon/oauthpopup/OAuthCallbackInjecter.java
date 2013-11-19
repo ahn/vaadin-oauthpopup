@@ -7,10 +7,32 @@ import org.scribe.exceptions.OAuthException;
 
 import com.vaadin.server.VaadinRequest;
 
+/**
+ * "Injects" the OAuth callback URI with an id to make it possible to
+ * determine which callback request relates to which OAuthData.
+ * <p>
+ * Currently there are two injecters:
+ * - {@link PathInjecter} modifies the URI path
+ * - {@link QueryInjecter} modifies the URI query
+ * <p>
+ * The reason there are different kind of injecters is that different
+ * services deal with callbacks a bit differently.
+ * If the callback is defined to be http://example.com/foo/ in the application settings,
+ * some services may not accept http://example.com/foo/bar/
+ * and some services may not send custom query parameters to the callback.
+ * Most services work with both {@link PathInjecter} and {@link QueryInjecter}, however.
+ *
+ */
 public interface OAuthCallbackInjecter {
 	
+	/**
+	 * "Injects" the id into the callback.
+	 */
 	public String injectIdToCallback(String callback, String id);
 	
+	/**
+	 * Extracts the id that was injected into the callback.
+	 */
 	public String extractIdFromCallback(VaadinRequest request);
 	
 	public static final String CALLBACK_ID_NAME = "oauthpopupcallback";
