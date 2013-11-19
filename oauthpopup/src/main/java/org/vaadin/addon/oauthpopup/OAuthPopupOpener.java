@@ -56,6 +56,8 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 	
 	@Override
 	public void detach() {
+		super.detach();
+		
 		data.removeListener(dataListener);
 		
 		// Deleting the session attribute.
