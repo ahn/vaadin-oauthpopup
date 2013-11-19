@@ -122,4 +122,7 @@ public class OAuthPopupButton extends CustomComponent {
 		opener.setScope(scope);
 	}
 	
+	public void setCallbackInjecter(OAuthCallbackInjecter injecter) {
+		opener.setCallbackInjecter(injecter);
+	}
 }

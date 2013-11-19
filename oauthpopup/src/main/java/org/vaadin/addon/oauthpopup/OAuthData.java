@@ -1,7 +1,5 @@
 package org.vaadin.addon.oauthpopup;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -14,6 +12,8 @@ import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+
+import com.vaadin.server.VaadinRequest;
 
 /**
  * Thread-safe class for storing OAuth data.
@@ -44,6 +44,8 @@ public class OAuthData {
 	private Token accessToken;
 
 	private OAuthService service;
+
+	private OAuthCallbackInjecter injecter = OAuthCallbackInjecter.PATH_INJECTER;
 	
 	public OAuthData(Class<? extends Api> apiClass, String apiKey, String apiSecret) {
 		this.id = nextId();
@@ -86,30 +88,8 @@ public class OAuthData {
 		return DefaultApi20.class.isAssignableFrom(getApiClass());
 	}
 	
-	synchronized public String getCallback() {
-		return callback;
-	}
-	
 	synchronized public void setCallback(String callback) {
-		try {
-			this.callback = appendIdToCallback(callback);
-		} catch (URISyntaxException e) {
-			throw new OAuthException("Invalid callback URI syntax: " + callback, e);
-		}
-	}
-	
-	/**
-	 * Appends the "/oauthpopupcallback/ID" to the callback path
-	 * so that the {@link OAuthCallbackRequestHandler} knows that it
-	 * should handle the callback.
-	 */
-	private String appendIdToCallback(String callback) throws URISyntaxException {
-		URI old = new URI(callback);
-		String oldPath = old.getPath();
-		String idPath = OAuthCallbackRequestHandler.CALLBACK_PATH+"/"+getId();
-		String newPath = oldPath.endsWith("/") ? oldPath+idPath : oldPath+"/"+idPath;
-		URI newUri = new URI(old.getScheme(), old.getAuthority(), newPath, old.getQuery(), old.getFragment());
-		return newUri.toASCIIString();
+		this.callback = callback;
 	}
 	
 	synchronized public String getScope() {
@@ -195,9 +175,22 @@ public class OAuthData {
 	}
 
 	synchronized public OAuthConfig asConfig() {
-		return new OAuthConfig(apiKey, apiSecret, callback, SignatureType.Header, scope, null);
+		String injected = getInjecter().injectIdToCallback(callback, getId());
+		return new OAuthConfig(apiKey, apiSecret, injected, SignatureType.Header, scope, null);
 	}
 	
+	public boolean isCallbackForMe(VaadinRequest request) {
+		return getId().equals(getInjecter().extractIdFromCallback(request));
+	}
+	
+	public synchronized void setCallbackInjecter(OAuthCallbackInjecter injecter) {
+		this.injecter = injecter;
+	}
+	
+	private synchronized OAuthCallbackInjecter getInjecter() {
+		return injecter;
+	}
+
 	private OAuthService getService() {
 		if (service==null) {
 			service = createApiInstance().createService(asConfig());
@@ -230,5 +223,9 @@ public class OAuthData {
 	public synchronized String getAuthorizationUrl(Token requestToken) {
 		return getService().getAuthorizationUrl(requestToken);
 	}
+
+	
+
+	
 	
 }
