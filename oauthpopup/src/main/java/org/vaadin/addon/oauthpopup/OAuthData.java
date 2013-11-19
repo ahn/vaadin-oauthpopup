@@ -45,7 +45,7 @@ public class OAuthData {
 
 	private OAuthService service;
 
-	private OAuthCallbackInjecter injecter = OAuthCallbackInjecter.PATH_INJECTER;
+	private OAuthCallbackInjecter injecter = OAuthCallbackInjecter.QUERY_INJECTER;
 	
 	public OAuthData(Class<? extends Api> apiClass, String apiKey, String apiSecret) {
 		this.id = nextId();
