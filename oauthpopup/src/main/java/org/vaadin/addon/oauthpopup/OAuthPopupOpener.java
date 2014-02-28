@@ -106,4 +106,9 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 			}
 		});
 	}
+
+	public void setCallbackInjecter(OAuthCallbackInjecter injecter) {
+		data.setCallbackInjecter(injecter);
+	}
+
 }

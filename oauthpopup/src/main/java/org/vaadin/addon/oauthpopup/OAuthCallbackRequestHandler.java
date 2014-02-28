@@ -13,17 +13,12 @@ import com.vaadin.server.VaadinSession;
 /**
  * Handles the callback from the OAuth authorization url.
  * <p>
- * Only handles requests where the path ends with "/oauthpopupcallback/ID"
- * where ID is what OAuthData.getId() returns.
- * <p>
  * When done, closes the window and removes this handler.
  *
  */
 @SuppressWarnings("serial")
 public class OAuthCallbackRequestHandler implements RequestHandler {
 
-	public static final String CALLBACK_PATH = "oauthpopupcallback";
-	
 	private final Token requestToken;
 	private final OAuthData data;
 
@@ -34,7 +29,7 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 			"</body></html>";
 
 	/**
-	 * Only handles request that match the requestToken and data id.
+	 * Only handles request that match the data id.
 	 * 
 	 * @param requestToken may be null (in case of OAuth2)
 	 * @param data
@@ -48,14 +43,7 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 	public boolean handleRequest(VaadinSession session,
 			VaadinRequest request, VaadinResponse response) throws IOException {
 		
-		if (!pathForMe(request.getPathInfo())) {
-			return false;
-		}
-				
-		String reqTok = request.getParameter("oauth_token");
-		if (reqTok != null && requestToken != null && !reqTok.equals(requestToken.getToken())) {
-			// My token is different from the token in callback URL parameter
-			// => this callback is not for me.
+		if (!data.isCallbackForMe(request)) {
 			return false;
 		}
 
@@ -91,23 +79,6 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 		data.setDenied(errorMessage);
 		finish(session, response);
 		return true;
-	}
-	
-	private boolean pathForMe(String path) {
-		if (path==null) {
-			return false;
-		}
-		String[] pathParts = path.split("/");
-		int len = pathParts.length;
-		if (len < 2) {
-			return false;
-		}
-		String nextToLast = pathParts[len-2];
-		if (!CALLBACK_PATH.equals(nextToLast)) {
-			return false;
-		}
-		String last = pathParts[len-1];
-		return data.getId().equals(last);
 	}
 
 	private void finish(VaadinSession session, VaadinResponse response) throws IOException {
