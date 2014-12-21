@@ -14,8 +14,9 @@ public interface OAuthListener {
 	 * 
 	 * @param accessToken the OAuth access token
 	 * @param accessTokenSecret the OAuth access token secret
+	 * @param oauthRawResponse the raw response from OAuth2 server. It can contain some useful extended information such as user-id or e-mail.
 	 */
-	public void authSuccessful(String accessToken, String accessTokenSecret);
+	public void authSuccessful(String accessToken, String accessTokenSecret, String oauthRawResponse);
 	
 	/**
 	 * Called when the OAuth was denied.

@@ -42,8 +42,8 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 		
 		dataListener = new OAuthListener() {
 			@Override
-			public void authSuccessful(String accessToken, String accessTokenSecret) {
-				fireAuthSuccessful(accessToken, accessTokenSecret);
+			public void authSuccessful(String accessToken, String accessTokenSecret, String oauthRawResponse) {
+				fireAuthSuccessful(accessToken, accessTokenSecret, oauthRawResponse);
 			}
 			
 			@Override
@@ -81,7 +81,7 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 		return u.getScheme()+"://"+u.getAuthority()+u.getPath();
 	}
 	
-	private void fireAuthSuccessful(final String accessToken, final String accessTokenSecret) {
+	private void fireAuthSuccessful(final String accessToken, final String accessTokenSecret, final String oauthRawResponse) {
 		// Coming from different thread than the usual Vaadin server visit.
 		// That's why we have to call access (TODO: session or UI?, seems like UI is correct.)
 		// Doing this here so our listeners don't need to.
@@ -89,7 +89,7 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 			@Override
 			public void run() {
 				for (final OAuthListener li : listeners) {
-					li.authSuccessful(accessToken, accessTokenSecret);
+					li.authSuccessful(accessToken, accessTokenSecret, oauthRawResponse);
 				}
 			}
 		});

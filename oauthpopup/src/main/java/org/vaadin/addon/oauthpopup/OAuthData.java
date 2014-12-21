@@ -210,7 +210,7 @@ public class OAuthData {
 
 	private void fireSuccess(Token at) {
 		for (OAuthListener li : listeners) {
-			li.authSuccessful(at.getToken(), at.getSecret());
+			li.authSuccessful(at.getToken(), at.getSecret(), at.getRawResponse());
 		}
 	}
 	
