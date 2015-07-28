@@ -126,7 +126,8 @@ public class DemoUI extends UI {
 		opener.extend(b);
 		opener.addOAuthListener(new OAuthListener() {
 			@Override
-			public void authSuccessful(String accessToken, String accessTokenSecret) {
+			public void authSuccessful(String accessToken,
+					String accessTokenSecret, String oauthRawResponse) {
 				Notification.show("authSuccessful");
 			}
 			
@@ -167,7 +168,7 @@ public class DemoUI extends UI {
 
 		@Override
 		public void authSuccessful(final String accessToken,
-				final String accessTokenSecret) {
+				final String accessTokenSecret, String oauthRawResponse) {
 			hola.addComponent(new Label("Authorized."));
 			Button testButton = new Button("Test " + service.name + " API");
 			testButton.addStyleName(BaseTheme.BUTTON_LINK);
