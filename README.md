@@ -5,11 +5,11 @@ OAuth Popup add-on contains buttons that open an
 can authorize the Vaadin application to do things on the users' behalf on
 various services such as Facebook, Twitter, etc.
 
-
+<!--
 ## Online demo
 
 Try the [OAuth Popup add-on demo](http://130.230.142.91:8080/oauthpopup/).
-
+-->
 
 ## Add-on
 
