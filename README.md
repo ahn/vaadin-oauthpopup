@@ -54,7 +54,7 @@ OAuthPopupButton ob = new TwitterButton(TW_KEY, TW_SECRET);
 
 ob.addOAuthListener(new OAuthListener() {
   @Override
-  public void authSuccessful(String accessToken, String accessTokenSecret) {
+  public void authSuccessful(Token token, boolean isOAuth20) {
     Notification.show("Authorized");
     // TODO: do something with the access token
   }
@@ -70,10 +70,10 @@ layout.addComponent(ob);
 ```
 
 For some services it's possible to set the *scope* of OAuth authorization.
-The format of scope is service-depended, often a comma-separate list of names.
+The format of scope is service-dependent, often a comma or space separated list of names.
 
 ```java
-ob.setScope("email");
+ob.getOAuthPopupConfig().setScope("email");
 ```
 
 By default, the OAuth window is opened in a new tab in most browsers.
@@ -85,7 +85,7 @@ ob.setPopupWindowFeatures("resizable,width=400,height=300");
 ```
 
 If you like to use some component other than button to open the popup window,
-you can extend any component with a `OAuthPopupOpener`.
+you can extend any component with an `OAuthPopupOpener`.
 
 ## Roadmap
 
@@ -137,7 +137,7 @@ The basic flow goes as follows:
     * redirects the user to the OAuth authorization URL
 4. When the user returns from the authorization URL to our callback URL:
     * the `OAuthCallbackRequestHandler` is no longer needed, and is removed from session
-    * the `OAuthListener`s of are called, either `authSuccessful` or `authFailed` 
+    * the `OAuthListener`s of are called, either `authSuccessful` or `authDenied` 
 5. When the `OAuthPopupOpener` is detached, it clears the session attribute where the `OAuthData` was
 
 
