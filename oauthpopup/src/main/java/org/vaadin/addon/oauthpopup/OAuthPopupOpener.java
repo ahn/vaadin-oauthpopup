@@ -21,6 +21,17 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 	
 	private final OAuthData data;
 	private OAuthListener dataListener;
+
+	/**
+	 * Create a new OAuth popup opener for an OAuth 1.0a service.
+	 * 
+	 * @param api The ScribeJava OAuth 1.0a API singleton instance.
+	 * @param apiKey The client API key for the OAuth service.
+	 * @param apiSecret The client API secret for the OAuth service.
+	 */
+	public OAuthPopupOpener(DefaultApi10a api, String apiKey, String apiSecret) {
+		this(api, OAuthPopupConfig.getStandardOAuth10aConfig(apiKey, apiSecret));
+	}
 	
 	/**
 	 * Create a new OAuth popop opener for an OAuth 1.0a service.
@@ -31,6 +42,17 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 	public OAuthPopupOpener(DefaultApi10a api, OAuthPopupConfig config) {
 		super(OAuthPopupUI.class);
 		this.data = new OAuthData(api, config);
+	}
+	
+	/**
+	 * Create a new OAuth popup opener for an OAuth 2.0 service.
+	 * 
+	 * @param api The ScribeJava OAuth 2.0 API singleton instance.
+	 * @param apiKey The client API key for the OAuth service.
+	 * @param apiSecret The client API secret for the OAuth service.
+	 */
+	public OAuthPopupOpener(DefaultApi20 api, String apiKey, String apiSecret) {
+		this(api, OAuthPopupConfig.getStandardOAuth20Config(apiKey, apiSecret));
 	}
 
 	/**

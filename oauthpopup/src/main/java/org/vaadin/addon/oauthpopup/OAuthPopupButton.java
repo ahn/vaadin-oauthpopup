@@ -32,13 +32,35 @@ public class OAuthPopupButton extends Button {
 	 * Create a new OAuth popup button for an OAuth 1.0a service.
 	 * 
 	 * @param api The ScribeJava OAuth 1.0a API singleton instance.
+	 * @param apiKey The client API key for the OAuth service.
+	 * @param apiSecret The client API secret for the OAuth service.
+	 */
+	public OAuthPopupButton(DefaultApi10a api, String apiKey, String apiSecret) {
+		this(api, OAuthPopupConfig.getStandardOAuth10aConfig(apiKey, apiSecret));
+	}
+	
+	/**
+	 * Create a new OAuth popup button for an OAuth 1.0a service.
+	 * 
+	 * @param api The ScribeJava OAuth 1.0a API singleton instance.
 	 * @param config OAuth configuration for the particular service.
 	 */
 	public OAuthPopupButton(DefaultApi10a api, OAuthPopupConfig config) {
 		this.opener = new OAuthPopupOpener(api, config);
 		opener.extend(this);
 	}
-
+	
+	/**
+	 * Create a new OAuth popup button for an OAuth 2.0 service.
+	 * 
+	 * @param api The ScribeJava OAuth 2.0 API singleton instance.
+	 * @param apiKey The client API key for the OAuth service.
+	 * @param apiSecret The client API secret for the OAuth service.
+	 */
+	public OAuthPopupButton(DefaultApi20 api, String apiKey, String apiSecret) {
+		this(api, OAuthPopupConfig.getStandardOAuth20Config(apiKey, apiSecret));
+	}
+	
 	/**
 	 * Create a new OAuth popup button for an OAuth 2.0 service.
 	 * 
