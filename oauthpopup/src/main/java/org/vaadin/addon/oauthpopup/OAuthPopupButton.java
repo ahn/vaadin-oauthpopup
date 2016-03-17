@@ -1,128 +1,95 @@
 package org.vaadin.addon.oauthpopup;
 
-import org.scribe.builder.api.Api;
-
-import com.vaadin.server.Resource;
+import com.github.scribejava.core.builder.api.DefaultApi10a;
+import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CustomComponent;
 
 /**
- * A button that opens a OAuth authorization url in a separate browser window,
- * and lets the user to perform the authorization.
- * <p>
- * The success/failure of the authorization can be listened
- * with {@link #addOAuthListener(OAuthListener)}.
- * <p>
- * IMPORTANT: the callback comes from a different window, not from the usual
+ * <p>A button that opens a OAuth authorization url in a separate browser window,
+ * and lets the user to perform the authorization.</p>
+ * 
+ * <p>The success/failure of the authorization can be listened
+ * with {@link #addOAuthListener(OAuthListener)}.</p>
+ * 
+ * <p>IMPORTANT: the callback comes from a different window, not from the usual
  * Vaadin server-visit thread. That's why the UI is not updated automatically,
- * UNLESS server push is enabled. So, it's good idea to enable @Push in the UI class.
- * <p>
- * This class may be subclassed for customization, or
- * used just by giving the Scribe Api class for the constructor.
- * The latter approach may not work for all Api's because
- * all the Apis don't work the same and some customization might
- * be necessary...
- * <p>
- * Available subclasses are at {@link org.vaadin.addon.oauthpop.buttons}.
+ * UNLESS server push is enabled. So, it's good idea to enable {@code @Push} in the UI class.</p>
+ * 
+ * <p>This class may be subclassed for customization, or used directly
+ * by giving the ScribeJava API class and OAuth configuration for the constructor.</p>
+ * 
+ * <p>Pre-configured subclasses for a number of OAuth services are  available at 
+ * {@link org.vaadin.addon.oauthpop.buttons}.</p>
  *
  */
-@SuppressWarnings("serial")
-// I guess we might have as well just inherit Button, not CustomComponent...
-public class OAuthPopupButton extends CustomComponent {
+public class OAuthPopupButton extends Button {
 	
-	
-	private final OAuthPopupOpener opener;
-	
-	private Button button;
+	private static final long serialVersionUID = -3227617699696740673L;
 
-	public OAuthPopupButton(Class<? extends Api> apiClass, String key, String secret) {
-		this.opener = new OAuthPopupOpener(apiClass, key, secret);
-		button = new Button();
-		opener.extend(button);
-		setCompositionRoot(button);
+	private final OAuthPopupOpener opener;
+
+	/**
+	 * Create a new OAuth popup button for an OAuth 1.0a service.
+	 * 
+	 * @param api The ScribeJava OAuth 1.0a API singleton instance.
+	 * @param config OAuth configuration for the particular service.
+	 */
+	public OAuthPopupButton(DefaultApi10a api, OAuthPopupConfig config) {
+		this.opener = new OAuthPopupOpener(api, config);
+		opener.extend(this);
 	}
-	
-	protected Button getButton() {
-		return button;
+
+	/**
+	 * Create a new OAuth popup button for an OAuth 2.0 service.
+	 * 
+	 * @param api The ScribeJava OAuth 2.0 API singleton instance.
+	 * @param config OAuth configuration for the particular service.
+	 */
+	public OAuthPopupButton(DefaultApi20 api, OAuthPopupConfig config) {
+		this.opener = new OAuthPopupOpener(api, config);
+		opener.extend(this);
 	}
 	
 	/**
-	 *  IMPORTANT: the listener call originates from a different window,
+	 * Retrives the OAuth configuration in use by this widget.
+	 * 
+	 * @return OAuth configuration
+	 */
+	public OAuthPopupConfig getOAuthPopupConfig() {
+		return opener.getOAuthPopupConfig();
+	}
+
+	/**
+	 *  IMPORTANT: listener events originate from a different window,
 	 *  not from the usual Vaadin server-visit thread.
 	 *  That's why the UI is not updated automatically, UNLESS server push is enabled.
-	 *  So, it's good idea to enable @Push in the UI class.
+	 *  So, it's good idea to enable {@code @Push} in the UI class.
+	 *  
+	 * @param listener The OAuth authorization event listener.
 	 */
 	public void addOAuthListener(OAuthListener listener) {
 		opener.addOAuthListener(listener);
 	}
-	
+
 	/**
-	 *  IMPORTANT: the listener call originates from a different window,
+	 *  IMPORTANT: listener events originate from a different window,
 	 *  not from the usual Vaadin server-visit thread.
 	 *  That's why the UI is not updated automatically, UNLESS server push is enabled.
-	 *  So, it's good idea to enable @Push in the UI class.
+	 *  So, it's good idea to enable {@code @Push} in the UI class.
+	 *  
+	 * @param listener The OAuth authorization event listener.
 	 */
 	public void removeListener(OAuthListener listener) {
 		opener.removeOAuthListener(listener);
 	}
 	
-	@Override
-	public void setCaption(String caption) {
-		button.setCaption(caption);
-	}
-	
-	@Override
-	public void setDescription(String description) {
-		button.setDescription(description);
-	}
-	
-	@Override
-	public void setIcon(Resource icon) {
-		button.setIcon(icon);
-	}
-	
 	/**
-	 * Comma-separated list of features given to the BrowserWindowOpener.
-	 * <p>
-	 * See here for feature names: https://vaadin.com/book/vaadin7/-/page/advanced.html
+	 * <p>Set the features given to the {@link BrowserWindowOpener}.</p>
+	 * <p>See here for feature names: https://vaadin.com/book/vaadin7/-/page/advanced.html</p>
 	 * 
+	 * @param features Comma separated list of features.
 	 */
 	public void setPopupWindowFeatures(String features) {
 		opener.setFeatures(features);
-	}
-	
-	/**
-	 * Sets the callback URI for the OAuth.
-	 * <p>
-	 * Must be called before user opens the popup to have effect.
-	 * <p>
-	 * NOTE: OAuth Popup addon automatically adds "/oauthpopupcallback/X"
-	 * to the end of the callback path.
-	 * That's to let the callback handler know that it should handle the request.
-	 * <p>
-	 * Default: see {@link #setCallbackToDefault()}
-	 * 
-	 */
-	public void setCallback(String callback) {
-		opener.setCallback(callback);
-	}
-	
-	/**
-	 * Sets the callback URI to default.
-	 * <p>
-	 * The default callback is constructed from current Page location:
-	 *  SCHEME + "://" + AUTHORITY + PATH
-	 * 	
-	 */
-	public void setCallbackToDefault() {
-		opener.setCallbackToDefault();
-	}
-	
-	public void setScope(String scope) {
-		opener.setScope(scope);
-	}
-	
-	public void setCallbackInjecter(OAuthCallbackInjecter injecter) {
-		opener.setCallbackInjecter(injecter);
 	}
 }
