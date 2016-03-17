@@ -4,7 +4,6 @@ import javax.servlet.annotation.WebServlet;
 
 import org.vaadin.addon.oauthpopup.OAuthListener;
 import org.vaadin.addon.oauthpopup.OAuthPopupButton;
-import org.vaadin.addon.oauthpopup.OAuthPopupConfig;
 import org.vaadin.addon.oauthpopup.OAuthPopupOpener;
 import org.vaadin.addon.oauthpopup.buttons.FacebookButton;
 import org.vaadin.addon.oauthpopup.buttons.GitHubButton;
@@ -16,7 +15,6 @@ import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.apis.GitHubApi;
 import com.github.scribejava.apis.LinkedInApi;
 import com.github.scribejava.apis.TwitterApi;
-import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.model.Token;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
@@ -25,6 +23,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -135,10 +134,7 @@ public class DemoUI extends UI {
 	private void addTwitterNativeButton() {
 		final NativeButton b = new NativeButton("Another Twitter Auth Button");
 		
-		OAuthPopupOpener opener = new OAuthPopupOpener(
-				(DefaultApi10a) TWITTER_API.scribeApi, 
-				OAuthPopupConfig.getStandardOAuth10aConfig(TWITTER_API.apiKey, TWITTER_API.apiSecret)
-			);
+		OAuthPopupOpener opener = new OAuthPopupOpener(TwitterApi.instance(), TWITTER_API.apiKey, TWITTER_API.apiSecret);
 		opener.extend(b);
 		opener.addOAuthListener(new OAuthListener() {
 			@Override
@@ -184,10 +180,15 @@ public class DemoUI extends UI {
 
 		@Override
 		public void authSuccessful(final Token token, final boolean isOAuth20) {
-			hola.addComponent(new Label("Authorized."));
+			Label l = new Label("Authorized.");
+			hola.addComponent(l);
+			hola.setComponentAlignment(l, Alignment.MIDDLE_CENTER);
+			
 			Button testButton = new Button("Test " + service.name + " API");
 			testButton.addStyleName(BaseTheme.BUTTON_LINK);
 			hola.addComponent(testButton);
+			hola.setComponentAlignment(testButton, Alignment.MIDDLE_CENTER);
+			
 			testButton.addClickListener(new ClickListener() {
 				@Override
 				public void buttonClick(ClickEvent event) {
@@ -203,7 +204,9 @@ public class DemoUI extends UI {
 
 		@Override
 		public void authDenied(String reason) {
-			hola.addComponent(new Label("Auth failed."));
+			Label l = new Label("Auth failed.");
+			hola.addComponent(l);
+			hola.setComponentAlignment(l, Alignment.MIDDLE_CENTER);
 		}
 	}
 }
