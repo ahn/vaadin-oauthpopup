@@ -10,7 +10,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vaadin.version>7.1.7</vaadin.version>
+		<vaadin.version>7.6.4</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 	</properties>
 
@@ -33,6 +33,9 @@
 		<repository>
 			<id>vaadin-addons</id>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>vaadin-snapshots</id>
@@ -41,7 +44,7 @@
 				<enabled>false</enabled>
 			</releases>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
@@ -63,7 +66,7 @@
 		<dependency>
 			<groupId>org.vaadin.addon</groupId>
 			<artifactId>oauthpopup</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
@@ -72,7 +75,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client-compiler</artifactId>
+			<artifactId>vaadin-server</artifactId>
+			<version>${vaadin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-client</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
@@ -85,6 +93,11 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20090211</version>
 		</dependency>
 	</dependencies>
 
@@ -106,14 +119,14 @@
 				<version>2.4.1</version>
 				<configuration>
 					<filesets>
-						<fileset>
-							<!-- Clean-up widgetset required for "inplace" compilation -->
+						<!-- Clean-up widgetset required for "inplace" compilation -->
+						<!--fileset>
 							<directory>${basedir}/src/main/webapp/VAADIN/widgetsets</directory>
-						</fileset>
-						<fileset>
-							<!-- Clean-up gwt cache -->
+						</fileset -->
+						<!-- Clean-up gwt cache -->
+						<!-- fileset>
 							<directory>${basedir}/src/main/webapp/VAADIN/gwt-unitCache</directory>
-						</fileset>
+						</fileset -->
 					</filesets>
 				</configuration>
 			</plugin>
@@ -124,14 +137,11 @@
 				<configuration>
 					<packagingExcludes>
 						**/VAADIN/gwt-unitCache/**,
-						**/VAADIN/widgetsets/WEB-INF/**,
 						**/WEB-INF/lib/servlet-api-*.jar,
-						**/WEB-INF/lib/vaadin-client-*.jar,
+						**/WEB-INF/lib/vaadin-client-compiler*.jar,
 						**/WEB-INF/lib/jetty-*.jar,
 						**/WEB-INF/lib/ant-*.jar,
-						**/WEB-INF/classes/gwt-unitCache/**,
-						**/WEB-INF/classes/themes/**,
-						**/WEB-INF/classes/widgetsets/**
+						**/WEB-INF/classes/gwt-unitCache/**
 					</packagingExcludes>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
@@ -159,8 +169,8 @@
 						</configuration>
 						<goals>
 							<goal>resources</goal>
-							<goal>update-widgetset</goal>
-							<goal>compile</goal>
+							<!-- goal>update-widgetset</goal -->
+							<!-- goal>compile</goal -->
 						</goals>
 					</execution>
 				</executions>
@@ -202,7 +212,7 @@
 										</versionRange>
 										<goals>
 											<goal>resources</goal>
-											<goal>update-widgetset</goal>
+											<!-- goal>update-widgetset</goal -->
 											<goal>compile</goal>
 											<goal>update-theme</goal>
 											<goal>compile-theme</goal>
