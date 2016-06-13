@@ -44,24 +44,21 @@ import com.vaadin.ui.themes.BaseTheme;
 public class DemoUI extends UI {
 
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class, widgetset = "org.vaadin.addon.oauthpopup.demo.DemoWidgetSet")
+	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class, widgetset = "org.vaadin.addon.oauthpopup.demo.DemoWidgetset")
 	public static class Servlet extends VaadinServlet {  }
 	
-	// Twitter test application at http://localhost:8080
 	private static final ApiInfo TWITTER_API = new ApiInfo("Twitter",
 			TwitterApi.instance(),
 			"31ssXGMU4WW6KPxWwT6IMQ",
 			"FR3wJmGyGAdpQMxB3vMreED2UnsHVb6nPF16f1RrtU",
 			"https://api.twitter.com/1.1/account/settings.json");
 	
-	// Facebook test application at http://localhost:8080
 	private static final ApiInfo FACEBOOK_API = new ApiInfo("Facebook",
 			FacebookApi.instance(),
 			"170732353126405",
 			"dd59293cda395bf38a88044c22937e7e",
 			"https://graph.facebook.com/me");
 	
-	// LinkedIn test application at http://localhost:8080
 	private static final ApiInfo LINKEDIN_API = new ApiInfo("LinkedIn",
 			LinkedInApi.instance(),
 			"bp0aa1rxk2re",
@@ -88,7 +85,7 @@ public class DemoUI extends UI {
 		layout.setMargin(true);
 		layout.setSpacing(true);
 		setContent(layout);
-
+		
 		addTwitterButton();
 		addFacebookButton();
 		addLinkedInButton();
@@ -128,6 +125,7 @@ public class DemoUI extends UI {
 	private void addGoogleButton() {
 		ApiInfo api = GOOGLE_API;
 		OAuthPopupButton button = new GoogleButton(api.apiKey, api.apiSecret, "https://www.googleapis.com/auth/plus.login");
+		button.getOAuthPopupConfig().setCallbackUrl("urn:ietf:wg:oauth:2.0:oob");
 		addButton(api, button);
 	}
 	

@@ -1,9 +1,11 @@
 package org.vaadin.addon.oauthpopup;
 
 import java.io.OutputStream;
+import java.net.URI;
 
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.SignatureType;
+import com.vaadin.server.Page;
 
 /**
  * <p>This object is used to store OAuth configuration that may change between particular API 
@@ -26,6 +28,7 @@ public class OAuthPopupConfig {
 	private String grantType;
 	private String responseType;
 	private String callbackParameterName;
+	private String callbackUrl;
 	private String verifierParameterName;
 	private SignatureType signatureType;
 	private OutputStream outputStream;
@@ -35,12 +38,19 @@ public class OAuthPopupConfig {
 	private String errorParameterName;
 	
 	// Set by OAuthData
-	private String callback;
 	private String state;
 	
 	protected OAuthPopupConfig(String apiKey, String apiSecret) { 
 		this.apiKey = apiKey;
 		this.apiSecret = apiSecret;
+		initializeCallbackUrl();
+	}
+	
+	private void initializeCallbackUrl() {
+		String url;
+		URI u = Page.getCurrent().getLocation();
+		url = u.getScheme()+"://"+u.getAuthority()+u.getPath();
+		setCallbackUrl(url);
 	}
 	
 	/**
@@ -76,10 +86,10 @@ public class OAuthPopupConfig {
 				.setErrorParameterName("error");
 	}
 	
-	protected OAuthConfig asScribeConfig() {
+	public OAuthConfig asScribeConfig() {
 		return new OAuthConfig(getApiKey(), 
 				getApiSecret(), 
-				getCallback(),
+				getCallbackUrl(),
 				getSignatureType(), 
 				getScope(), 
 				getOutputStream(), 
@@ -203,6 +213,26 @@ public class OAuthPopupConfig {
 	}
 
 	/**
+	 * Retrieves the callback URL which will be requested upon successful OAuth authorization.
+	 * 
+	 * @return The callback URL.
+	 */
+	public String getCallbackUrl() {
+		return callbackUrl;
+	}
+
+	/**
+	 * Set the callback URL which will be requested upon successful OAuth authorization. 
+	 * 
+	 * @param callbackUrl The callback URL.
+	 * @return The {@code OAuthPopupConfig} instance.
+	 */
+	public OAuthPopupConfig setCallbackUrl(String callbackUrl) {
+		this.callbackUrl = callbackUrl;
+		return this;
+	}
+
+	/**
 	 * Set the query parameter name used to identify the verifier token. This
 	 * is typically "code" for OAuth 2.0 and "oauth_verifier" for OAuth 1.0a.
 	 * 
@@ -298,27 +328,6 @@ public class OAuthPopupConfig {
 	 */
 	public OAuthPopupConfig setCallbackInjector(OAuthCallbackInjector callbackInjector) {
 		this.callbackInjector = callbackInjector;
-		return this;
-	}
-
-	/**
-	 * Retrieves the callback URL which will be requested upon successful OAuth authorization.
-	 * 
-	 * @return The callback URL.
-	 */
-	public String getCallback() {
-		return callback;
-	}
-
-	/**
-	 * Set the callback URL which will be requested upon successful OAuth authorization. This value
-	 * should normally be set by {@link OAuthData}.
-	 * 
-	 * @param callback The callback URL.
-	 * @return The {@code OAuthPopupConfig} instance.
-	 */
-	protected OAuthPopupConfig setCallback(String callback) {
-		this.callback = callback;
 		return this;
 	}
 

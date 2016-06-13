@@ -1,18 +1,18 @@
 package org.vaadin.addon.oauthpopup;
 
-import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.oauth.OAuthService;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 
 /**
@@ -49,7 +49,7 @@ public class OAuthData {
 		this.api10a = api;
 		this.api20 = null;
 		this.config = config;
-		initializeCallback();
+		injectCallbackId();
 	}
 	
 	protected OAuthData(DefaultApi20 api, OAuthPopupConfig config) {
@@ -57,15 +57,13 @@ public class OAuthData {
 		this.api20 = api;
 		this.api10a = null;
 		this.config = config;
-		initializeCallback();
+		injectCallbackId();
 	}
 	
-	private void initializeCallback() {
-		String callback;
-		URI u = Page.getCurrent().getLocation();
-		callback = u.getScheme()+"://"+u.getAuthority()+u.getPath();
+	private void injectCallbackId() {
+		String callback = config.getCallbackUrl();
 		callback = config.getCallbackInjector().injectParameterToCallback(callback, CALLBACK_ID_PARAMETER_NAME, getId());
-		config.setCallback(callback);
+		config.setCallbackUrl(callback);
 	}
 	
 	/**
@@ -297,7 +295,7 @@ public class OAuthData {
 			url = ((OAuth20Service) getService()).getAuthorizationUrl();
 		} else {
 			url = ((OAuth10aService) getService()).getAuthorizationUrl(requestToken);
-			url = config.getCallbackInjector().injectParameterToCallback(url, config.getCallbackParameterName(), config.getCallback());
+			url = config.getCallbackInjector().injectParameterToCallback(url, config.getCallbackParameterName(), config.getCallbackUrl());
 		}
 		return url;
 	}
