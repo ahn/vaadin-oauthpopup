@@ -1,0 +1,35 @@
+plugins {
+	id "fi.jasoft.plugin.vaadin" version "0.11"
+}
+
+apply plugin: 'eclipse-wtp'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+dependencies {
+	compile project(':oauthpopup')
+	compile fileTree(dir: 'src/main/webapp/WEB-INF/lib', include: '*.jar')
+	compile 'org.json:json:20090211'
+}
+
+vaadin {
+	version rootProject.vaadinVersion
+	push true
+	mainSourceSet sourceSets.main.java
+	useClassPathJar = false // Was causing issues for some reason
+	vaadinCompile {
+		optimize 9
+		logLevel "INFO"
+		draftCompile true
+	}
+}
