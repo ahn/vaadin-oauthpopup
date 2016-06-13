@@ -4,7 +4,7 @@ def vaadinVersion = '7.6.4'
 ext.vaadinVersion = vaadinVersion
 
 task wrapper(type: Wrapper) {
-   gradleVersion = '2.9' //version required
+   gradleVersion = '2.13' //version required
 }
 
 allprojects {
