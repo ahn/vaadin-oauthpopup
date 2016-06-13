@@ -44,7 +44,7 @@ import com.vaadin.ui.themes.BaseTheme;
 public class DemoUI extends UI {
 
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class, widgetset = "org.vaadin.addon.oauthpopup.demo.DemoWidgetSet")
+	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class, widgetset = "org.vaadin.addon.oauthpopup.demo.DemoWidgetset")
 	public static class Servlet extends VaadinServlet {  }
 	
 	// Twitter test application at http://localhost:8080
@@ -128,6 +128,7 @@ public class DemoUI extends UI {
 	private void addGoogleButton() {
 		ApiInfo api = GOOGLE_API;
 		OAuthPopupButton button = new GoogleButton(api.apiKey, api.apiSecret, "https://www.googleapis.com/auth/plus.login");
+		button.getOAuthPopupConfig().setCallbackUrl("urn:ietf:wg:oauth:2.0:oob");
 		addButton(api, button);
 	}
 	
