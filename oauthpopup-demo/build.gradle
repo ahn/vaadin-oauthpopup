@@ -33,3 +33,16 @@ vaadin {
 		draftCompile true
 	}
 }
+
+task demoJar(type: Jar, dependsOn: classes) {
+	baseName = project.name
+	appendix = ''
+	
+	from(sourceSets.main.output) {
+		exclude('**/DemoUI*')
+	}
+}
+
+artifacts {
+	archives demoJar
+}
