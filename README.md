@@ -11,6 +11,20 @@ Since the OAuth dialog is opened in a separate window,
 **the application should enable [server push](https://vaadin.com/book/vaadin7/-/page/advanced.push.html)**.
 Otherwise the actual application UI will not be updated when the OAuth window has been closed.
 
+### Getting Started
+
+You can download this addon directly from the Vaadin Directory here: [https://vaadin.com/directory#!addon/oauth2-popup-add-on](https://vaadin.com/directory#!addon/oauth2-popup-add-on). You can also use Vaadin's Maven repository to add it to your project. See 
+the add-on page for more information.
+
+Note that if you add the JARs to your project manually you will also need the ScribeJava dependency as well:
+
+```
+<dependency>
+   <groupId>com.github.scribejava</groupId>
+   <artifactId>scribejava-apis</artifactId>
+   <version>2.7.3</version>
+</dependency>
+```
 
 ### NOTE
 This project was forked from @ahn's initial implementation and is available as a separate add-on in the Vaadin Directory
