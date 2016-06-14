@@ -1,5 +1,6 @@
 package org.vaadin.addon.oauthpopup.demo;
 
+import java.io.IOException;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
@@ -13,6 +14,7 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.oauth.OAuthService;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -68,7 +70,11 @@ class GetTestComponent extends Panel {
 			((OAuth10aService) service).signRequest((OAuth1AccessToken) accessToken, request);
 		}
 		Response resp = request.send();
-		responseArea.setValue(resp.getBody());
+		try {
+			responseArea.setValue(resp.getBody());
+		} catch (ReadOnlyException | IOException e) {
+			responseArea.setValue(e.getClass() + ": " + e.getMessage());
+		} 
 	}
 	
 	private OAuthService createOAuthService() {
