@@ -30,7 +30,7 @@ public class OAuthPopupConfig {
 	private String callbackUrl;
 	private String verifierParameterName;
 	private SignatureType signatureType;
-	private OutputStream outputStream;
+	private OutputStream debugStream;
 	private Integer connectTimeout;
 	private Integer readTimeout;
 	private String userAgent;
@@ -76,14 +76,14 @@ public class OAuthPopupConfig {
 	 * @return A pre-configured OAuth configuration object.
 	 */
 	public static OAuthPopupConfig getStandardOAuth20Config(String apiKey, String apiSecret) {
-		return new OAuthPopupConfig(apiKey, apiSecret)
+		OAuthPopupConfig config = new OAuthPopupConfig(apiKey, apiSecret)
 				.setCallbackParameterName("redirect_uri")
 				.setVerifierParameterName("code")
 				.setResponseType("code")
-				//.setGrantType("authorization_code")
 				.setSignatureType(SignatureType.QueryString)
-				.setCallbackInjector(OAuthCallbackInjector.QUERY_INJECTOR)
 				.setErrorParameterName("error");
+		config.setCallbackInjector(new OAuthCallbackInjector.OAuth2StateInjector(config));
+		return config;
 	}
 	
 	public ServiceBuilder createScribeServiceBuilder() {
@@ -96,8 +96,8 @@ public class OAuthPopupConfig {
 			sb.signatureType(getSignatureType());
 		if (getScope() != null && !getScope().isEmpty()) 
 			sb.scope(getScope());
-		if (getOutputStream() != null) 
-			sb.debugStream(getOutputStream());
+		if (getDebugStream() != null) 
+			sb.debugStream(getDebugStream());
 		if (getConnectTimeout() != null) 
 			sb.connectTimeout(getConnectTimeout());
 		if (getReadTimeout() != null) 
@@ -366,18 +366,18 @@ public class OAuthPopupConfig {
 	 * 
 	 * @return An output stream.
 	 */
-	public OutputStream getOutputStream() {
-		return outputStream;
+	public OutputStream getDebugStream() {
+		return debugStream;
 	}
 	
 	/**
-	 * Set the output stream to be used by the ScribeJava library. 
+	 * Set the debug output stream to be used by the ScribeJava library. 
 	 * 
 	 * @param outputStream An output stream.
 	 * @return The {@code OAuthPopupConfig} instance.
 	 */
-	public OAuthPopupConfig setOutputStream(OutputStream outputStream) {
-		this.outputStream = outputStream;
+	public OAuthPopupConfig setDebugStream(OutputStream debugStream) {
+		this.debugStream = debugStream;
 		return this;
 	}
 
