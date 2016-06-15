@@ -13,6 +13,10 @@ sourceSets {
         resources {
             srcDirs = ['src/main/resources']
         }
+        
+        // Fix for vaadinRun, which wasn't pulling in resources
+        output.resourcesDir = 'build/classes'
+        output.classesDir = 'build/classes'
     }
 }
 
@@ -20,21 +24,28 @@ dependencies {
 	compile project(':oauthpopup')
 	compile fileTree(dir: 'src/main/webapp/WEB-INF/lib', include: '*.jar')
 	compile 'org.json:json:20090211'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.7.4'
 }
 
 vaadin {
 	version rootProject.vaadinVersion
 	push true
 	mainSourceSet sourceSets.main.java
-	useClassPathJar = false // Was causing issues for some reason
+	useClassPathJar false // Was causing issues for some reason
+	logToConsole true
 	vaadinCompile {
 		optimize 9
 		logLevel "INFO"
 		draftCompile true
+		widgetset "org.vaadin.addon.oauthpopup.demo.AppWidgetset"
+	}
+	vaadinRun {
+		serverPort = 8080
+		openInBrowser false
 	}
 }
 
-task demoJar(type: Jar, dependsOn: classes) {
+task jar(type: Jar, dependsOn: classes, overwrite: true) {
 	baseName = project.name
 	appendix = ''
 	
@@ -44,5 +55,5 @@ task demoJar(type: Jar, dependsOn: classes) {
 }
 
 artifacts {
-	archives demoJar
+	archives jar
 }
