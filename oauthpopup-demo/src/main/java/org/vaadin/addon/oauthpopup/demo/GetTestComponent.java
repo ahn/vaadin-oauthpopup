@@ -1,12 +1,20 @@
 package org.vaadin.addon.oauthpopup.demo;
 
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
+import java.io.IOException;
 
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.builder.api.DefaultApi10a;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.model.OAuth1AccessToken;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.oauth.OAuth10aService;
+import com.github.scribejava.core.oauth.OAuth20Service;
+import com.github.scribejava.core.oauth.OAuthService;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -23,16 +31,17 @@ class GetTestComponent extends Panel {
 	private final ApiInfo service;
 	private TextArea responseArea;
 	
-	GetTestComponent(ApiInfo service, String accessToken, String accessTokenSecret) {
+	GetTestComponent(ApiInfo service, Token accessToken) {
 		setSizeFull();
 		
 		setContent(layout);
 		layout.setSizeFull();
 		
 		this.service = service;
-		this.accessToken = new Token(accessToken, accessTokenSecret);
+		this.accessToken = accessToken;
 		
 		layout.setMargin(true);
+		layout.setSpacing(true);
 		final TextField field = new TextField("Request:", service.exampleGetRequest);
 		field.setWidth("100%");
 		layout.addComponent(field);
@@ -53,19 +62,30 @@ class GetTestComponent extends Panel {
 	}
 	
 	private void sendGet(String get) {
-		OAuthRequest request = new OAuthRequest(Verb.GET, get);
-		createOAuthService().signRequest(accessToken, request);
+		final OAuthService service = createOAuthService();
+		final OAuthRequest request = new OAuthRequest(Verb.GET, get, service);
+		if (service instanceof OAuth20Service) {
+			((OAuth20Service) service).signRequest((OAuth2AccessToken) accessToken, request);
+		} else {
+			((OAuth10aService) service).signRequest((OAuth1AccessToken) accessToken, request);
+		}
 		Response resp = request.send();
-		responseArea.setValue(resp.getBody());
-		
+		try {
+			responseArea.setValue(resp.getBody());
+		} catch (ReadOnlyException | IOException e) {
+			responseArea.setValue(e.getClass() + ": " + e.getMessage());
+		} 
 	}
 	
 	private OAuthService createOAuthService() {
-		ServiceBuilder sb = new ServiceBuilder();
-		sb.provider(service.scribeApi);
-		sb.apiKey(service.apiKey);
-		sb.apiSecret(service.apiSecret);
-		sb.callback("http://www.google.fi");
-		return sb.build();
+		final ServiceBuilder sb =  new ServiceBuilder()
+				.apiKey(service.apiKey)
+				.apiSecret(service.apiSecret)
+				.callback("http://www.google.fi");
+		if (service.scribeApi instanceof DefaultApi10a) {
+			return sb.build((DefaultApi10a) service.scribeApi);
+		} else {
+			return sb.build((DefaultApi20) service.scribeApi);
+		}
 	}
 }

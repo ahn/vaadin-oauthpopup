@@ -1,32 +1,100 @@
 package org.vaadin.addon.oauthpopup;
 
-import java.net.URI;
 import java.util.LinkedList;
 
-import org.scribe.builder.api.Api;
-
+import com.github.scribejava.core.builder.api.DefaultApi10a;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.model.Token;
 import com.vaadin.server.BrowserWindowOpener;
-import com.vaadin.server.Page;
 
+/**
+ * Component extension that opens an OAuth authorization popup window when the extended
+ * component is clicked.
+ * 
+ * @author Bryson Dunn
+ *
+ */
 @SuppressWarnings("serial")
 public class OAuthPopupOpener extends BrowserWindowOpener {
 	
 	private LinkedList<OAuthListener> listeners = new LinkedList<OAuthListener>();
 	
 	private final OAuthData data;
-
 	private OAuthListener dataListener;
-	
-	public OAuthPopupOpener(Class<? extends Api> apiClass, String key, String secret) {
-		super(OAuthPopupUI.class);
-		this.data = new OAuthData(apiClass, key, secret);
-		setCallbackToDefault();
+
+	/**
+	 * Create a new OAuth popup opener for an OAuth 1.0a service.
+	 * 
+	 * @param api The ScribeJava OAuth 1.0a API singleton instance.
+	 * @param apiKey The client API key for the OAuth service.
+	 * @param apiSecret The client API secret for the OAuth service.
+	 */
+	public OAuthPopupOpener(DefaultApi10a api, String apiKey, String apiSecret) {
+		this(api, OAuthPopupConfig.getStandardOAuth10aConfig(apiKey, apiSecret));
 	}
 	
+	/**
+	 * Create a new OAuth popop opener for an OAuth 1.0a service.
+	 * 
+	 * @param api The ScribeJava OAuth 1.0a API singleton instance.
+	 * @param config OAuth configuration for the particular service.
+	 */
+	public OAuthPopupOpener(DefaultApi10a api, OAuthPopupConfig config) {
+		super(OAuthPopupUI.class);
+		this.data = new OAuthData(api, config);
+	}
+	
+	/**
+	 * Create a new OAuth popup opener for an OAuth 2.0 service.
+	 * 
+	 * @param api The ScribeJava OAuth 2.0 API singleton instance.
+	 * @param apiKey The client API key for the OAuth service.
+	 * @param apiSecret The client API secret for the OAuth service.
+	 */
+	public OAuthPopupOpener(DefaultApi20 api, String apiKey, String apiSecret) {
+		this(api, OAuthPopupConfig.getStandardOAuth20Config(apiKey, apiSecret));
+	}
+
+	/**
+	 * Create a new OAuth popop opener for an OAuth 2.0 service.
+	 * 
+	 * @param api The ScribeJava OAuth 2.0 API singleton instance.
+	 * @param config OAuth configuration for the particular service.
+	 */
+	public OAuthPopupOpener(DefaultApi20 api, OAuthPopupConfig config) {
+		super(OAuthPopupUI.class);
+		this.data = new OAuthData(api, config);
+	}
+
+	/**
+	 * Retrives the OAuth configuration in use by this widget.
+	 * 
+	 * @return OAuth configuration
+	 */
+	public OAuthPopupConfig getOAuthPopupConfig() {
+		return data.getOAuthPopupConfig();
+	}
+
+	/**
+	 *  IMPORTANT: listener events originate from a different window,
+	 *  not from the usual Vaadin server-visit thread.
+	 *  That's why the UI is not updated automatically, UNLESS server push is enabled.
+	 *  So, it's good idea to enable {@code @Push} in the UI class.
+	 *  
+	 * @param listener The OAuth authorization event listener.
+	 */
 	public void addOAuthListener(OAuthListener listener) {
 		listeners.add(listener);
 	}
-	
+
+	/**
+	 *  IMPORTANT: listener events originate from a different window,
+	 *  not from the usual Vaadin server-visit thread.
+	 *  That's why the UI is not updated automatically, UNLESS server push is enabled.
+	 *  So, it's good idea to enable {@code @Push} in the UI class.
+	 *  
+	 * @param listener The OAuth authorization event listener.
+	 */
 	public void removeOAuthListener(OAuthListener listener) {
 		listeners.remove(listener);
 	}
@@ -38,12 +106,12 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 		// Adding the session attribute.
 		String attr = data.getSessionAttributeName();
 		getSession().setAttribute(attr, data);
-		setParameter("data", attr);
+		setParameter(OAuthPopupUI.DATA_PARAM_NAME, attr);
 		
 		dataListener = new OAuthListener() {
 			@Override
-			public void authSuccessful(String accessToken, String accessTokenSecret, String oauthRawResponse) {
-				fireAuthSuccessful(accessToken, accessTokenSecret, oauthRawResponse);
+			public void authSuccessful(Token token, boolean isOAuth20) {
+				fireAuthSuccessful(token, isOAuth20);
 			}
 			
 			@Override
@@ -51,46 +119,30 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 				fireAuthFailed(reason);
 			}
 		};
-		data.addListener(dataListener);
+		data.addOAuthListener(dataListener);
 	}
 	
 	@Override
 	public void detach() {
 		super.detach();
 		
-		data.removeListener(dataListener);
+		data.removeOAuthListener(dataListener);
 		
 		// Deleting the session attribute.
 		getSession().setAttribute(data.getSessionAttributeName(), null);
 	}
 	
-	public void setCallback(String callback) {
-		data.setCallback(callback);
-	}
-	
-	public void setCallbackToDefault() {
-		setCallback(getDefaultCallback());
-	}
-	
-	public void setScope(String scope) {
-		data.setScope(scope);
-	}
-	
-	private static String getDefaultCallback() {
-		URI u = Page.getCurrent().getLocation();
-		return u.getScheme()+"://"+u.getAuthority()+u.getPath();
-	}
-	
-	private void fireAuthSuccessful(final String accessToken, final String accessTokenSecret, final String oauthRawResponse) {
+	private void fireAuthSuccessful(final Token token, final boolean isOAuth20) {
 		// Coming from different thread than the usual Vaadin server visit.
-		// That's why we have to call access (TODO: session or UI?, seems like UI is correct.)
+		// That's why we have to call access.
 		// Doing this here so our listeners don't need to.
 		getUI().access(new Runnable() {
 			@Override
 			public void run() {
 				for (final OAuthListener li : listeners) {
-					li.authSuccessful(accessToken, accessTokenSecret, oauthRawResponse);
+					li.authSuccessful(token, isOAuth20);
 				}
+				getUI().push();
 			}
 		});
 	}
@@ -102,13 +154,8 @@ public class OAuthPopupOpener extends BrowserWindowOpener {
 				for (final OAuthListener li : listeners) {
 					li.authDenied(reason);
 				}
-
+				getUI().push();
 			}
 		});
 	}
-
-	public void setCallbackInjecter(OAuthCallbackInjecter injecter) {
-		data.setCallbackInjecter(injecter);
-	}
-
 }

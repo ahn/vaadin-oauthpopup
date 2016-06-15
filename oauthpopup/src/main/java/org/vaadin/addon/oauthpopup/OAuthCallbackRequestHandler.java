@@ -1,10 +1,9 @@
 package org.vaadin.addon.oauthpopup;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
-import org.scribe.model.Token;
-import org.scribe.model.Verifier;
-
+import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.vaadin.server.RequestHandler;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
@@ -19,7 +18,7 @@ import com.vaadin.server.VaadinSession;
 @SuppressWarnings("serial")
 public class OAuthCallbackRequestHandler implements RequestHandler {
 
-	private final Token requestToken;
+	private final OAuth1RequestToken requestToken;
 	private final OAuthData data;
 
 	private static final String CLOSE_WINDOW_HTML =
@@ -34,49 +33,38 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 	 * @param requestToken may be null (in case of OAuth2)
 	 * @param data
 	 */
-	public OAuthCallbackRequestHandler(Token requestToken, OAuthData data) {
+	public OAuthCallbackRequestHandler(OAuth1RequestToken requestToken, OAuthData data) {
 		this.requestToken = requestToken;
 		this.data = data;
 	}
 
 	@Override
-	public boolean handleRequest(VaadinSession session,
-			VaadinRequest request, VaadinResponse response) throws IOException {
+	public boolean handleRequest(VaadinSession session, VaadinRequest request, VaadinResponse response) throws IOException {
 		
 		if (!data.isCallbackForMe(request)) {
+			// Debugger
+			/*Logger.getGlobal().log(Level.INFO, "Request isn't for me");
+			for (Map.Entry<String, String[]> e : request.getParameterMap().entrySet()) {
+				Logger.getGlobal().log(Level.INFO, "\t"+e.getKey()+"="+URLDecoder.decode(e.getValue()[0], "UTF-8"));
+			}*/
 			return false;
 		}
-
-		String verifier = request.getParameter(data.getVerifierParameterName());
+		
+		String verifier = request.getParameter(data.getOAuthPopupConfig().getVerifierParameterName());
 		if (verifier != null) {
 			// Got verifier!
-			data.setVerifier(requestToken, new Verifier(verifier));
+			//Logger.getGlobal().log(Level.INFO, "Found verifier request with verifier " + verifier);
+			data.setVerifier(requestToken, verifier);
 			finish(session, response);
 			return true;
 		}
 		
-		// No verifier in the parameters. That's most likely because the user
-		// denied the OAuth.
+		// No verifier in the parameters. That's most likely because the user denied the OAuth.
+		String error = request.getParameter(data.getOAuthPopupConfig().getErrorParameterName());
+		error = error == null ? "OAuth failed due to an unspecified reason" : URLDecoder.decode(error, "UTF-8");
+		//Logger.getGlobal().log(Level.INFO, "Error occurred " + error);
 		
-		// TODO: current error message reporting (below) is not very useful
-		
-		String error = null;
-		for (String errorName : data.getErrorParameterNames()) {
-			error = request.getParameter(errorName);
-			if (error != null) {
-				break;
-			}
-		}
-		
-		String errorMessage;
-		if (error==null) {
-			errorMessage = "OAuth failed.";
-		}
-		else {
-			errorMessage = "OAuth denied: " + error;
-		}
-		
-		data.setDenied(errorMessage);
+		data.setDenied(error);
 		finish(session, response);
 		return true;
 	}
@@ -98,5 +86,4 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 			}
 		});
 	}
-
 }
