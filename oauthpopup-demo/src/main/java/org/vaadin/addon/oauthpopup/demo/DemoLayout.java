@@ -1,5 +1,7 @@
 package org.vaadin.addon.oauthpopup.demo;
 
+import java.io.IOException;
+
 import org.vaadin.addon.oauthpopup.OAuthListener;
 import org.vaadin.addon.oauthpopup.OAuthPopupButton;
 import org.vaadin.addon.oauthpopup.OAuthPopupOpener;
@@ -8,7 +10,10 @@ import org.vaadin.addon.oauthpopup.buttons.GoogleButton;
 import org.vaadin.addon.oauthpopup.buttons.LinkedInButton;
 import org.vaadin.addon.oauthpopup.buttons.TwitterButton;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.apis.GitHubApi;
+import com.github.scribejava.apis.GoogleApi20;
 import com.github.scribejava.apis.LinkedInApi;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.model.Token;
@@ -28,85 +33,27 @@ import com.vaadin.ui.themes.BaseTheme;
 public class DemoLayout extends VerticalLayout {
 	
 	private static final long serialVersionUID = -5419208604938947038L;
-
-	private static final ApiInfo TWITTER_API = new ApiInfo("Twitter",
-			TwitterApi.instance(),
-			"31ssXGMU4WW6KPxWwT6IMQ",
-			"FR3wJmGyGAdpQMxB3vMreED2UnsHVb6nPF16f1RrtU",
-			"https://api.twitter.com/1.1/account/settings.json");
 	
-	/*private static final ApiInfo FACEBOOK_API = new ApiInfo("Facebook",
-			FacebookApi.instance(),
-			"170732353126405",
-			"dd59293cda395bf38a88044c22937e7e",
-			"https://graph.facebook.com/me");*/
-	
-	private static final ApiInfo LINKEDIN_API = new ApiInfo("LinkedIn",
-			LinkedInApi.instance(),
-			"bp0aa1rxk2re",
-			"Q2Na42cZmVs3OWnI",
-			"https://api.linkedin.com/v1/people/~");
-	
-	private static final ApiInfo GITHUB_API = new ApiInfo("GitHub",
-			GitHubApi.instance(),
-			"97a7e251c538106e7922",
-			"6a36b0992e5e2b00a38c44c21a6e0dc8ae01d83b",
-			"https://api.github.com/user");
-	
-	private static final ApiInfo GOOGLE_API = new ApiInfo("Google",
-			GitHubApi.instance(),
-			"127486145149-2e3cdqvuhq9b0iheesevhcp8vona5hug.apps.googleusercontent.com",
-			"PKJiIhj68V-uo-l9DOooRNL7",
-			"https://www.googleapis.com/plus/v1/people/me");
-
 	public DemoLayout() {
-		setMargin(true);
 		setSpacing(true);
 		
-
-		addTwitterButton();
-		//addFacebookButton();
 		addLinkedInButton();
 		addGitHubButton();
 		addGoogleButton();
-		
-		addTwitterNativeButton();
+		addTwitterButtons();
 	}
 	
-	private void addTwitterButton() {
-		ApiInfo api = TWITTER_API;
+	private void addTwitterButtons() {
+		ApiInfo api = readClientSecrets("/client_secret.twitter.json",
+				"Twitter",
+				TwitterApi.instance(),
+				"https://api.twitter.com/1.1/account/settings.json");
+		if (api == null) return;
 		OAuthPopupButton button = new TwitterButton(api.apiKey, api.apiSecret);
 		addButton(api, button);
-	}
-	
-	/*private void addFacebookButton() {
-		ApiInfo api = FACEBOOK_API;
-		OAuthPopupButton button = new FacebookButton(api.apiKey, api.apiSecret);
-		addButton(api, button);
-	}*/
-	
-	private void addLinkedInButton() {
-		ApiInfo api = LINKEDIN_API;
-		OAuthPopupButton button = new LinkedInButton(api.apiKey, api.apiSecret);
-		addButton(api, button);
-	}
-	
-	private void addGitHubButton() {
-		ApiInfo api = GITHUB_API;
-		OAuthPopupButton button = new GitHubButton(api.apiKey, api.apiSecret);
-		addButton(api, button);
-	}
-	
-	private void addGoogleButton() {
-		ApiInfo api = GOOGLE_API;
-		OAuthPopupButton button = new GoogleButton(api.apiKey, api.apiSecret, "https://www.googleapis.com/auth/plus.login");
-		addButton(api, button);
-	}
-	
-	private void addTwitterNativeButton() {
 		final NativeButton b = new NativeButton("Another Twitter Auth Button");
 		
-		OAuthPopupOpener opener = new OAuthPopupOpener(TwitterApi.instance(), TWITTER_API.apiKey, TWITTER_API.apiSecret);
+		OAuthPopupOpener opener = new OAuthPopupOpener(TwitterApi.instance(), api.apiKey, api.apiSecret);
 		opener.extend(b);
 		opener.addOAuthListener(new OAuthListener() {
 			@Override
@@ -121,6 +68,60 @@ public class DemoLayout extends VerticalLayout {
 		});
 		
 		addComponent(b);
+	}
+	
+	private void addLinkedInButton() {
+		ApiInfo api = readClientSecrets("/client_secret.linkedin.json",
+				"LinkedIn",
+				LinkedInApi.instance(),
+				"https://api.linkedin.com/v1/people/~?format=json");
+		if (api == null) return;
+		OAuthPopupButton button = new LinkedInButton(api.apiKey, api.apiSecret);
+		addButton(api, button);
+	}
+	
+	private void addGitHubButton() {
+		ApiInfo api = readClientSecrets("/client_secret.github.json", 
+				"GitHub", 
+				GitHubApi.instance(), 
+				"https://api.github.com/user");
+		if (api == null) return;
+		OAuthPopupButton button = new GitHubButton(api.apiKey, api.apiSecret);
+		addButton(api, button);
+	}
+	
+	private void addGoogleButton() {
+		ApiInfo api = readClientSecrets("/client_secret.google.json", 
+				"Google", 
+				GoogleApi20.instance(), 
+				"https://www.googleapis.com/plus/v1/people/me");
+		/*api = new ApiInfo("Google", GoogleApi20.instance(), 
+				"127486145149-q8or6g21t7hok8ngj83re7b1l06u22ff.apps.googleusercontent.com",
+				"Oth69gnVeJOevAoGbYRIxygA",
+				"https://www.googleapis.com/plus/v1/people/me");*/
+		if (api == null) return;
+		OAuthPopupButton button = new GoogleButton(api.apiKey, api.apiSecret, "https://www.googleapis.com/auth/plus.login");
+		addButton(api, button);
+	}
+	
+	// Client secrets are stored in a JSON file on the classpath in the following format:
+	// { "client_id": "my client id", "client_secret": "my client secret" }
+	private ApiInfo readClientSecrets(String resourcePath, String name, Object scribeApi, String getEndpoint) {
+		ApiInfo api = null;
+		if (getClass().getResource(resourcePath) != null) {
+			try {
+				JsonNode web = new ObjectMapper().readTree(getClass().getResourceAsStream(resourcePath));
+				if (web != null) {
+					api = new ApiInfo(name, scribeApi,
+						web.get("client_id").asText(),
+						web.get("client_secret").asText(),
+						getEndpoint);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return api;
 	}
 
 	private void addButton(final ApiInfo service, OAuthPopupButton button) {
@@ -175,7 +176,7 @@ public class DemoLayout extends VerticalLayout {
 				}
 			});
 		}
-
+		
 		@Override
 		public void authDenied(String reason) {
 			Label l = new Label("Auth failed.");
