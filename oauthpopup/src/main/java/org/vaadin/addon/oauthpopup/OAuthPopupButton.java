@@ -23,7 +23,7 @@ import com.vaadin.ui.CustomComponent;
  * all the Apis don't work the same and some customization might
  * be necessary...
  * <p>
- * Available subclasses are at {@link org.vaadin.addon.oauthpop.buttons}.
+ * Available subclasses are at {@link org.vaadin.addon.oauthpopup.buttons}.
  *
  */
 @SuppressWarnings("serial")
@@ -51,6 +51,7 @@ public class OAuthPopupButton extends CustomComponent {
 	 *  not from the usual Vaadin server-visit thread.
 	 *  That's why the UI is not updated automatically, UNLESS server push is enabled.
 	 *  So, it's good idea to enable @Push in the UI class.
+	 *  @param listener the {@link OAuthListener} to be added
 	 */
 	public void addOAuthListener(OAuthListener listener) {
 		opener.addOAuthListener(listener);
@@ -61,6 +62,7 @@ public class OAuthPopupButton extends CustomComponent {
 	 *  not from the usual Vaadin server-visit thread.
 	 *  That's why the UI is not updated automatically, UNLESS server push is enabled.
 	 *  So, it's good idea to enable @Push in the UI class.
+	 *  @param listener the {@link OAuthListener} to be removed
 	 */
 	public void removeListener(OAuthListener listener) {
 		opener.removeOAuthListener(listener);
@@ -85,7 +87,8 @@ public class OAuthPopupButton extends CustomComponent {
 	 * Comma-separated list of features given to the BrowserWindowOpener.
 	 * <p>
 	 * See here for feature names: https://vaadin.com/book/vaadin7/-/page/advanced.html
-	 * 
+	 *
+	 * @param features the features to be set
 	 */
 	public void setPopupWindowFeatures(String features) {
 		opener.setFeatures(features);
@@ -101,7 +104,7 @@ public class OAuthPopupButton extends CustomComponent {
 	 * That's to let the callback handler know that it should handle the request.
 	 * <p>
 	 * Default: see {@link #setCallbackToDefault()}
-	 * 
+	 * @param callback the callback URI
 	 */
 	public void setCallback(String callback) {
 		opener.setCallback(callback);

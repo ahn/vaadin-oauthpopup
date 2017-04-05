@@ -27,11 +27,16 @@ public interface OAuthCallbackInjecter {
 	
 	/**
 	 * "Injects" the id into the callback.
+	 * @param callback the callback that the id is to be injected
+	 * @param id the id to inject
+	 * @return the resulting callback URL
 	 */
 	public String injectIdToCallback(String callback, String id);
 	
 	/**
 	 * Extracts the id that was injected into the callback.
+	 * @param request the {@link VaadinRequest} that contains the id
+	 * @return the extracted id
 	 */
 	public String extractIdFromCallback(VaadinRequest request);
 	
