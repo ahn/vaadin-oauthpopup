@@ -1,15 +1,5 @@
 package org.vaadin.addon.oauthpopup.demo;
 
-import java.io.IOException;
-
-import org.vaadin.addon.oauthpopup.OAuthListener;
-import org.vaadin.addon.oauthpopup.OAuthPopupButton;
-import org.vaadin.addon.oauthpopup.OAuthPopupOpener;
-import org.vaadin.addon.oauthpopup.buttons.GitHubButton;
-import org.vaadin.addon.oauthpopup.buttons.GoogleButton;
-import org.vaadin.addon.oauthpopup.buttons.LinkedInButton;
-import org.vaadin.addon.oauthpopup.buttons.TwitterButton;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.apis.GitHubApi;
@@ -28,7 +18,16 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.ValoTheme;
+import org.vaadin.addon.oauthpopup.OAuthListener;
+import org.vaadin.addon.oauthpopup.OAuthPopupButton;
+import org.vaadin.addon.oauthpopup.OAuthPopupOpener;
+import org.vaadin.addon.oauthpopup.buttons.GitHubButton;
+import org.vaadin.addon.oauthpopup.buttons.GoogleButton;
+import org.vaadin.addon.oauthpopup.buttons.LinkedInButton;
+import org.vaadin.addon.oauthpopup.buttons.TwitterButton;
+
+import java.io.IOException;
 
 public class DemoLayout extends VerticalLayout {
 	
@@ -36,7 +35,7 @@ public class DemoLayout extends VerticalLayout {
 	
 	public DemoLayout() {
 		setSpacing(true);
-		
+
 		addLinkedInButton();
 		addGitHubButton();
 		addGoogleButton();
@@ -158,7 +157,7 @@ public class DemoLayout extends VerticalLayout {
 			hola.setComponentAlignment(l, Alignment.MIDDLE_CENTER);
 			
 			Button testButton = new Button("Test " + service.name + " API");
-			testButton.addStyleName(BaseTheme.BUTTON_LINK);
+			testButton.addStyleName(ValoTheme.BUTTON_LINK);
 			hola.addComponent(testButton);
 			hola.setComponentAlignment(testButton, Alignment.MIDDLE_CENTER);
 			
