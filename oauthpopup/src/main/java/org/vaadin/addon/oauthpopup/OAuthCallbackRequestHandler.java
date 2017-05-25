@@ -43,25 +43,26 @@ public class OAuthCallbackRequestHandler implements RequestHandler {
 		
 		if (!data.isCallbackForMe(request)) {
 			// Debugger
-			/*System.out.println("Request isn't for me");
-			for (Entry<String, String[]> e : request.getParameterMap().entrySet()) {
-				System.out.println("\t"+e.getKey()+"="+URLDecoder.decode(e.getValue()[0], "UTF-8"));
+			/*Logger.getGlobal().log(Level.INFO, "Request isn't for me");
+			for (Map.Entry<String, String[]> e : request.getParameterMap().entrySet()) {
+				Logger.getGlobal().log(Level.INFO, "\t"+e.getKey()+"="+URLDecoder.decode(e.getValue()[0], "UTF-8"));
 			}*/
 			return false;
 		}
 		
 		String verifier = request.getParameter(data.getOAuthPopupConfig().getVerifierParameterName());
-		//System.out.println("Found verifier request with verifier " + verifier);
 		if (verifier != null) {
 			// Got verifier!
+			//Logger.getGlobal().log(Level.INFO, "Found verifier request with verifier " + verifier);
 			data.setVerifier(requestToken, verifier);
 			finish(session, response);
 			return true;
 		}
 		
 		// No verifier in the parameters. That's most likely because the user denied the OAuth.
-		String error = URLDecoder.decode(request.getParameter(data.getOAuthPopupConfig().getErrorParameterName()), "UTF-8");
-		error = error == null ? "OAuth failed due to an unspecified reason" : error;
+		String error = request.getParameter(data.getOAuthPopupConfig().getErrorParameterName());
+		error = error == null ? "OAuth failed due to an unspecified reason" : URLDecoder.decode(error, "UTF-8");
+		//Logger.getGlobal().log(Level.INFO, "Error occurred " + error);
 		
 		data.setDenied(error);
 		finish(session, response);

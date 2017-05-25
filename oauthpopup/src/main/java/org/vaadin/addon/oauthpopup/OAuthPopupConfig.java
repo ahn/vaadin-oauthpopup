@@ -3,7 +3,7 @@ package org.vaadin.addon.oauthpopup;
 import java.io.OutputStream;
 import java.net.URI;
 
-import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.SignatureType;
 import com.vaadin.server.Page;
 
@@ -25,15 +25,15 @@ public class OAuthPopupConfig {
 	private String apiKey;
 	private String apiSecret;
 	private String scope;
-	private String grantType;
 	private String responseType;
 	private String callbackParameterName;
 	private String callbackUrl;
 	private String verifierParameterName;
 	private SignatureType signatureType;
-	private OutputStream outputStream;
+	private OutputStream debugStream;
 	private Integer connectTimeout;
 	private Integer readTimeout;
+	private String userAgent;
 	private OAuthCallbackInjector callbackInjector;
 	private String errorParameterName;
 	
@@ -76,29 +76,39 @@ public class OAuthPopupConfig {
 	 * @return A pre-configured OAuth configuration object.
 	 */
 	public static OAuthPopupConfig getStandardOAuth20Config(String apiKey, String apiSecret) {
-		return new OAuthPopupConfig(apiKey, apiSecret)
+		OAuthPopupConfig config = new OAuthPopupConfig(apiKey, apiSecret)
 				.setCallbackParameterName("redirect_uri")
 				.setVerifierParameterName("code")
 				.setResponseType("code")
-				.setGrantType("authorization_code")
 				.setSignatureType(SignatureType.QueryString)
-				.setCallbackInjector(OAuthCallbackInjector.QUERY_INJECTOR)
 				.setErrorParameterName("error");
+		config.setCallbackInjector(new OAuthCallbackInjector.OAuth2StateInjector(config));
+		return config;
 	}
 	
-	public OAuthConfig asScribeConfig() {
-		return new OAuthConfig(getApiKey(), 
-				getApiSecret(), 
-				getCallbackUrl(),
-				getSignatureType(), 
-				getScope(), 
-				getOutputStream(), 
-				getConnectTimeout(), 
-				getReadTimeout(), 
-				getGrantType(), 
-				getState(), 
-				getResponseType()
-			);
+	public ServiceBuilder createScribeServiceBuilder() {
+		final ServiceBuilder sb = new ServiceBuilder()
+				.apiKey(getApiKey())
+				.apiSecret(getApiSecret());
+		if (getCallbackUrl() != null && !getCallbackUrl().isEmpty()) 
+			sb.callback(getCallbackUrl());
+		if (getSignatureType() != null) 
+			sb.signatureType(getSignatureType());
+		if (getScope() != null && !getScope().isEmpty()) 
+			sb.scope(getScope());
+		if (getDebugStream() != null) 
+			sb.debugStream(getDebugStream());
+		if (getConnectTimeout() != null) 
+			sb.connectTimeout(getConnectTimeout());
+		if (getReadTimeout() != null) 
+			sb.readTimeout(getReadTimeout());
+		if (getUserAgent() != null && !getUserAgent().isEmpty()) 
+			sb.userAgent(getUserAgent());
+		if (getState() != null && !getState().isEmpty()) 
+			sb.state(getState());
+		if (getResponseType() != null && !getResponseType().isEmpty()) 
+			sb.responseType(getResponseType());
+		return sb;
 	}
 	
 	/**
@@ -137,27 +147,6 @@ public class OAuthPopupConfig {
 	 */
 	public OAuthPopupConfig setScope(String scope) {
 		this.scope = scope;
-		return this;
-	}
-	
-	/**
-	 * Retrieve the "grant_type" parameter to be used for OAuth authorization. 
-	 * 
-	 * @return The OAuth grant type parameter.
-	 */
-	public String getGrantType() {
-		return grantType;
-	}
-	
-	/**
-	 * Set the "grant_type" parameter to be used for OAuth authorization. Should 
-	 * typically be set to "authorization_code" for OAuth 2.0 services.
-	 * 
-	 * @param grantType The OAuth grant type parameter.
-	 * @return The {@code OAuthPopupConfig} instance.
-	 */
-	public OAuthPopupConfig setGrantType(String grantType) {
-		this.grantType = grantType;
 		return this;
 	}
 	
@@ -309,6 +298,26 @@ public class OAuthPopupConfig {
 	}
 
 	/**
+	 * Retrieve the "User-Agent" header to use for HTTP calls
+	 * 
+	 * @return The user agent value.
+	 */
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	/**
+	 * Set the "User-Agent" header to use for HTTP calls
+	 * 
+	 * @param connectTimeout The user agent value.
+	 * @return The {@code OAuthPopupConfig} instance.
+	 */
+	public OAuthPopupConfig setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+		return this;
+	}
+
+	/**
 	 * Retrieves the injector used to add key/value pairs to the callback URL for later use. 
 	 * 
 	 * @return The callback injector.
@@ -357,18 +366,18 @@ public class OAuthPopupConfig {
 	 * 
 	 * @return An output stream.
 	 */
-	public OutputStream getOutputStream() {
-		return outputStream;
+	public OutputStream getDebugStream() {
+		return debugStream;
 	}
 	
 	/**
-	 * Set the output stream to be used by the ScribeJava library. 
+	 * Set the debug output stream to be used by the ScribeJava library. 
 	 * 
 	 * @param outputStream An output stream.
 	 * @return The {@code OAuthPopupConfig} instance.
 	 */
-	public OAuthPopupConfig setOutputStream(OutputStream outputStream) {
-		this.outputStream = outputStream;
+	public OAuthPopupConfig setDebugStream(OutputStream debugStream) {
+		this.debugStream = debugStream;
 		return this;
 	}
 

@@ -9,13 +9,22 @@ fine-tuning for unsupported OAuth services. The button provided by this add-on o
 
 Since the OAuth dialog is opened in a separate window,
 **the application should enable [server push](https://vaadin.com/book/vaadin7/-/page/advanced.push.html)**.
-Otherwise the actual application UI will not be updated when the OAuth window is done,
-because without push the client of the application UI doesn't know that somethings's changed.
+Otherwise the actual application UI will not be updated when the OAuth window has been closed.
 
-OAuth Popup add-on contains buttons that open an
- popup dialog where the user
-can authorize the Vaadin application to do things on the users' behalf on
-various services such as Facebook, Twitter, etc.
+### Getting Started
+
+You can download this addon directly from the Vaadin Directory here: [https://vaadin.com/directory#!addon/oauth2-popup-add-on](https://vaadin.com/directory#!addon/oauth2-popup-add-on). You can also use Vaadin's Maven repository to add it to your project. See 
+the add-on page for more information.
+
+Note that if you add the JARs to your project manually you will also need the ScribeJava dependency as well:
+
+```
+<dependency>
+   <groupId>com.github.scribejava</groupId>
+   <artifactId>scribejava-apis</artifactId>
+   <version>2.7.3</version>
+</dependency>
+```
 
 ### NOTE
 This project was forked from @ahn's initial implementation and is available as a separate add-on in the Vaadin Directory
@@ -71,7 +80,7 @@ OAuthPopupConfig config = OAuthPopupConfig.getStandardOAuth20Config("my-key", "m
 config.setGrantType("authorization_code");
 config.setScope("https://www.googleapis.com/auth/plus.login");
 config.setCallbackUrl("urn:ietf:wg:oauth:2.0:oob");
-OAuthPopupButton google = new OAuthPopupButton(GoogleApi20.instance(), "my-key", "my-secret");
+OAuthPopupButton google = new OAuthPopupButton(GoogleApi20.instance(), config);
 ...
 ```
 

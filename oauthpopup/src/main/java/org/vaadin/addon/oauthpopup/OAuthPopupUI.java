@@ -67,7 +67,7 @@ public class OAuthPopupUI extends UI {
 	
 	private void goToAuthorizationUrl(OAuth1RequestToken requestToken, OAuthData data) {
 		String authUrl = data.getAuthorizationUrl(requestToken);
-		//System.out.println("Navigating to authorization URL: " + authUrl);
+		//Logger.getGlobal().log(Level.INFO, "Navigating to authorization URL: " + authUrl);
 		Page.getCurrent().setLocation(authUrl);
 	}
 }

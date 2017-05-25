@@ -1,7 +1,10 @@
 apply plugin: 'base'
+apply plugin: 'maven-publish'
 
-def vaadinVersion = '7.6.4'
+def vaadinVersion = '7.6.6'
 ext.vaadinVersion = vaadinVersion
+def scribeVersion = '2.7.3'
+ext.scribeVersion = scribeVersion
 
 task wrapper(type: Wrapper) {
    gradleVersion = '2.13' //version required
@@ -10,28 +13,11 @@ task wrapper(type: Wrapper) {
 allprojects {
 	apply plugin: 'java'
 	group = 'org.vaadin.addon.oauthpopup'
-	version = '0.0.5'
+	version = '0.1.0'
 	
 	javadoc {
 		enabled = false;
 	}
-	
-	/*sourceSets {
-	    main {
-	        java {
-	            srcDirs = ['src/main/java']
-	        }
-			
-	        resources {
-	            srcDirs = ['src/main/resources']
-	        }
-	    }
-	    test {
-	    	java {
-	    		srcDirs = ['src/test/java']
-	    	}
-	    }
-	}*/
 }
 
 subprojects {
@@ -44,8 +30,8 @@ subprojects {
 	}
 	
 	dependencies {
-		compile 'log4j:log4j:1.2.17'
-	    compile 'com.github.scribejava:scribejava-apis:2.4.0'
+		//compile 'log4j:log4j:1.2.17'
+	    compile 'com.github.scribejava:scribejava-apis:' + scribeVersion
 	    providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
 	}
 	
@@ -56,25 +42,41 @@ subprojects {
 		}
 	}
 	
-	tasks.withType(Jar) {
-		appendix = project.name
-		//classifier = 'BETA'
-	}
-	
 	// Always rebuild
 	jar.outputs.upToDateWhen { false }
 }
 
 project(':oauthpopup') {
+
+	apply plugin: 'maven-publish'
 	
 	dependencies {
 		testCompile group: 'junit', name: 'junit', version: '4.8.1'
-	    compile 'com.github.scribejava:scribejava-apis:2.4.0'
+	    compile 'com.github.scribejava:scribejava-apis:' + scribeVersion
 		compile 'com.vaadin:vaadin-server:' + vaadinVersion
 		compile('com.vaadin:vaadin-push:' + vaadinVersion)
 	}
 	
-	task addonJar(type: Jar, dependsOn: classes) {
+	publishing {
+	    repositories {
+	        maven {
+	            url "$buildDir/repo"
+	        }
+	    }
+	    publications {
+	        vaadinDirectory(MavenPublication) {
+	            from components.java
+	        }
+	    }
+	}
+	
+	model {
+		tasks.generatePomFileForVaadinDirectoryPublication {
+			destination = file("$buildDir/pom.xml")
+		}
+	}
+	
+	task jar(type: Jar, dependsOn: classes, overwrite: true) {
 		baseName = project.name
 		appendix = ''
 		
@@ -85,9 +87,14 @@ project(':oauthpopup') {
 							
 		from(sourceSets.main.output)
 		from(sourceSets.main.allSource)
+		into('META-INF/maven/' + project.group + '/' + project.name) {
+			from(file("$buildDir/pom.xml"))
+		}
 	}
 	
+	jar.dependsOn('generatePomFileForVaadinDirectoryPublication')
+	
 	artifacts {
-		archives addonJar
+		archives jar
 	}
 }

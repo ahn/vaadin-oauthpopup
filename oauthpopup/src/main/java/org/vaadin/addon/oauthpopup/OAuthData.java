@@ -1,5 +1,6 @@
 package org.vaadin.addon.oauthpopup;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -163,7 +164,7 @@ public class OAuthData {
 				return ((OAuth10aService) getService()).getRequestToken();
 			}
 		}
-		catch (OAuthException e) {
+		catch (OAuthException | IOException e) {
 			throw createException("Getting request token failed.", e);
 		}
 	}
@@ -191,7 +192,7 @@ public class OAuthData {
 			}
 			fireSuccess(at);
 		}
-		catch (OAuthException e) {
+		catch (OAuthException | IOException e) {
 			throw createException("Getting access token failed.", e);
 		}
 	}
@@ -226,7 +227,7 @@ public class OAuthData {
 	 * @param e Cause
 	 * @return Enriched exception
 	 */
-	public OAuthException createException(String msg, OAuthException e) {
+	public OAuthException createException(String msg, Exception e) {
 		return new OAuthException(msg
 				+ "\nUsing Scribe API: " + (isOAuth20() ? api20.getClass().getSimpleName() : api10a.getClass().getSimpleName())
 				+ "\n", e);
@@ -274,9 +275,9 @@ public class OAuthData {
 	private OAuthService getService() {
 		if (service == null) {
 			if (isOAuth20()) {
-				service = api20.createService(config.asScribeConfig());
+				service = config.createScribeServiceBuilder().build(api20);
 			} else {
-				service = api10a.createService(config.asScribeConfig());
+				service = config.createScribeServiceBuilder().build(api10a);
 			}
 		}
 		return service;
