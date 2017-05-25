@@ -14,7 +14,9 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
  */
 public class URLBasedButton extends OAuthPopupButton {
 
-    public URLBasedButton(DefaultApi20 api, OAuthPopupConfig config) {
+	private static final long serialVersionUID = -4543927777891305834L;
+
+	public URLBasedButton(DefaultApi20 api, OAuthPopupConfig config) {
         super(new URLBasedOAuthPopupOpener(api, config));
     }
 }
