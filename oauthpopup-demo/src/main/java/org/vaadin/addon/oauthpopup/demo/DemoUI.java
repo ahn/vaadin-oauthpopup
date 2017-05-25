@@ -20,7 +20,7 @@ import com.vaadin.ui.VerticalLayout;
 public class DemoUI extends UI {
 
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class, widgetset = "org.vaadin.addon.oauthpopup.demo.AppWidgetset")
+	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
 	public static class Servlet extends VaadinServlet {  }
 
 	private VerticalLayout layout;
