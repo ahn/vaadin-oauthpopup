@@ -1,7 +1,7 @@
 apply plugin: 'base'
 apply plugin: 'maven-publish'
 
-def vaadinVersion = '7.6.6'
+def vaadinVersion = '8.0.6'
 ext.vaadinVersion = vaadinVersion
 def scribeVersion = '2.7.3'
 ext.scribeVersion = scribeVersion
@@ -13,7 +13,7 @@ task wrapper(type: Wrapper) {
 allprojects {
 	apply plugin: 'java'
 	group = 'org.vaadin.addon.oauthpopup'
-	version = '0.1.0'
+	version = '1.0.0'
 	
 	javadoc {
 		enabled = false;

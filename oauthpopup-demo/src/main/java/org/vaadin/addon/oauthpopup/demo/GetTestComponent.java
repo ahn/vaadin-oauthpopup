@@ -14,7 +14,6 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.oauth.OAuthService;
-import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -72,7 +71,7 @@ class GetTestComponent extends Panel {
 		Response resp = request.send();
 		try {
 			responseArea.setValue(resp.getBody());
-		} catch (ReadOnlyException | IOException e) {
+		} catch (IOException e) {
 			responseArea.setValue(e.getClass() + ": " + e.getMessage());
 		} 
 	}
