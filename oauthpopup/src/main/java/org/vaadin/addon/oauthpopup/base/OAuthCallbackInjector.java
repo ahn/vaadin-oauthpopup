@@ -1,4 +1,4 @@
-package org.vaadin.addon.oauthpopup;
+package org.vaadin.addon.oauthpopup.base;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -116,9 +116,9 @@ public interface OAuthCallbackInjector {
 	// This injector doesn't modify the callback URI, it relies on the Scribe library to set the "state" query parameter
 	public class OAuth2StateInjector implements OAuthCallbackInjector {
 
-		private OAuthPopupConfig config;
+		private OAuthPopupConfigAbstract config;
 		
-		public OAuth2StateInjector(OAuthPopupConfig config) {
+		public OAuth2StateInjector(OAuthPopupConfigAbstract config) {
 			this.config = config;
 		}
 		
