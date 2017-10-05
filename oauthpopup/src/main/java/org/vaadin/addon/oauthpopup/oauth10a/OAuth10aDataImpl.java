@@ -32,7 +32,6 @@ public class OAuth10aDataImpl extends OAuthDataAbstract<OAuth10aService, Default
    *
    * @return The OAuth 1.0a request token if {@link #isOAuth10a()}, otherwise null.
    */
-  @Override
   public Token createNewRequestToken() {
     try {
       synchronized (this) {
@@ -49,7 +48,6 @@ public class OAuth10aDataImpl extends OAuthDataAbstract<OAuth10aService, Default
         verifier);
   }
 
-  @Override
   protected synchronized String getAuthorizationUrl(Token requestToken) {
     String url;
     url = ((OAuth10aService) getService()).getAuthorizationUrl((OAuth1RequestToken) requestToken);

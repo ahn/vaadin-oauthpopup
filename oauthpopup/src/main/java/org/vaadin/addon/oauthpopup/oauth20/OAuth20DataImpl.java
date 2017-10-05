@@ -30,20 +30,10 @@ public class OAuth20DataImpl extends OAuthDataAbstract<OAuth20Service, DefaultAp
     return ((OAuth20Service) getService()).getAccessToken(verifier);
   }
 
-  @Override
-  protected synchronized String getAuthorizationUrl(Token requestToken) {
-    String url;
+  protected synchronized String getAuthorizationUrl() {
     // OAuth20Service automatically injects "redirect_uri" parameter based on OAuthConfig
-    url = ((OAuth20Service) getService()).getAuthorizationUrl();
-    return url;
-  }
-
-  /**
-   * The default implementation of OAuth2.0 does not require a request token
-   */
-  @Override
-  public Token createNewRequestToken() {
-    return null;
+    return ((OAuth20Service) getService())
+        .getAuthorizationUrl(getOAuthPopupConfig().getAdditionalParams());
   }
 
 }

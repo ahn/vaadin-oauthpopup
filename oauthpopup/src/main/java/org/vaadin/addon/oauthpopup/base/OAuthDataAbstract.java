@@ -215,14 +215,4 @@ public abstract class OAuthDataAbstract<S extends OAuthService, T extends BaseAp
     return service;
   }
 
-  /**
-   * Returns the OAuth 1.0a or 2.0 authorization URL.
-   *
-   * @param requestToken OAuth 1.0a request token or null if OAuth 2.0
-   * @return An OAuth authorization URL
-   */
-  protected abstract String getAuthorizationUrl(Token requestToken);
-
-  public abstract Token createNewRequestToken();
-
 }

@@ -25,9 +25,9 @@ public abstract class OAuthPopupOpenerAbstract<S extends OAuthService, T extends
   private OAuthListener dataListener;
 
   /**
-   * Create a new OAuth popop opener for an OAuth 1.0a service.
+   * Create a new OAuth popop opener for an OAuth service.
    *
-   * @param api The ScribeJava OAuth 1.0a API singleton instance.
+   * @param api The ScribeJava OAuth API singleton instance.
    * @param config OAuth configuration for the particular service.
    */
   public OAuthPopupOpenerAbstract(T api, OAuthDataAbstract<S, T> oAuthData,

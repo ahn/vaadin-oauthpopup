@@ -8,6 +8,7 @@ import org.vaadin.addon.oauthpopup.base.OAuthPopupUIAbstract;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import com.vaadin.server.Page;
 
 /**
  * UI that redirects the user to OAuth authorization url.
@@ -20,9 +21,36 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 @SuppressWarnings("serial")
 public class OAuth20PopupUIImpl extends OAuthPopupUIAbstract<OAuth20Service, DefaultApi20> {
 
-  @Override
+  private OAuth20CallbackRequestHandlerImpl callbackHandler;
+
   protected OAuthCallbackRequestHandlerAbstract<OAuth20Service, DefaultApi20> getOAuthCallbackRequestHandler(
       Token requestToken, OAuthDataAbstract<OAuth20Service, DefaultApi20> data) {
     return new OAuth20CallbackRequestHandlerImpl(data);
   }
+
+  @Override
+  protected void redirectToAuthorization(OAuthDataAbstract<OAuth20Service, DefaultApi20> data) {
+    addCallbackHandler((OAuth20DataImpl) data);
+    goToAuthorizationUrl((OAuth20DataImpl) data);
+  }
+
+  private void addCallbackHandler(OAuth20DataImpl data) {
+    callbackHandler = new OAuth20CallbackRequestHandlerImpl(data);
+    getSession().addRequestHandler(callbackHandler);
+  }
+
+  private void goToAuthorizationUrl(OAuth20DataImpl data) {
+    final String authUrl = data.getAuthorizationUrl();
+    // Logger.getGlobal().log(Level.INFO, "Navigating to authorization URL: " + authUrl);
+    Page.getCurrent().setLocation(authUrl);
+  }
+
+  @Override
+  protected void cleanUpSession() {
+    // The session may have been already cleaned up by requestHandler,
+    // not always though.
+    // Doing it again doesn't do harm (?).
+    callbackHandler.cleanUpSession(getSession());
+  }
+
 }
