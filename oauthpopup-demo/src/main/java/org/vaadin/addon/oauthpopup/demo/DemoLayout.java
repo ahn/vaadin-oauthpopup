@@ -94,10 +94,6 @@ public class DemoLayout extends VerticalLayout {
 				"Google", 
 				GoogleApi20.instance(), 
 				"https://www.googleapis.com/plus/v1/people/me");
-		/*api = new ApiInfo("Google", GoogleApi20.instance(), 
-				"127486145149-q8or6g21t7hok8ngj83re7b1l06u22ff.apps.googleusercontent.com",
-				"Oth69gnVeJOevAoGbYRIxygA",
-				"https://www.googleapis.com/plus/v1/people/me");*/
 		if (api == null) return;
 		OAuthPopupButton button = new GoogleButton(api.apiKey, api.apiSecret, "https://www.googleapis.com/auth/plus.login");
 		addButton(api, button);
