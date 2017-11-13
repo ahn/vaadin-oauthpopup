@@ -1,7 +1,7 @@
 package org.vaadin.addon.oauthpopup.oauth10a;
 
 import org.vaadin.addon.oauthpopup.base.OAuthCallbackInjector;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
 
 import com.github.scribejava.core.model.SignatureType;
 
@@ -13,7 +13,7 @@ import com.github.scribejava.core.model.SignatureType;
  * @author Joao Martins
  *
  */
-public class OAuth10aPopupConfigImpl extends OAuthPopupConfigAbstract {
+public class OAuth10aPopupConfigImpl extends OAuthPopupConfig {
 
   protected OAuth10aPopupConfigImpl(String apiKey, String apiSecret) {
     super(apiKey, apiSecret);
@@ -26,7 +26,7 @@ public class OAuth10aPopupConfigImpl extends OAuthPopupConfigAbstract {
    * @param apiSecret The client API secret for the OAuth service.
    * @return A pre-configured OAuth configuration object.
    */
-  public static OAuthPopupConfigAbstract getStandardOAuthConfig(String apiKey,
+  public static OAuthPopupConfig getStandardOAuthConfig(String apiKey,
       String apiSecret) {
     return new OAuth10aPopupConfigImpl(apiKey, apiSecret).setCallbackParameterName("oauth_callback")
         .setVerifierParameterName("oauth_verifier").setSignatureType(SignatureType.QueryString)

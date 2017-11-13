@@ -3,7 +3,7 @@ package org.vaadin.addon.oauthpopup.oauth20;
 import java.io.IOException;
 
 import org.vaadin.addon.oauthpopup.base.OAuthDataAbstract;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.Token;
@@ -21,7 +21,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  */
 public class OAuth20DataImpl extends OAuthDataAbstract<OAuth20Service, DefaultApi20> {
 
-  protected OAuth20DataImpl(DefaultApi20 api, OAuthPopupConfigAbstract config) {
+  protected OAuth20DataImpl(DefaultApi20 api, OAuthPopupConfig config) {
     super(api, config);
   }
 

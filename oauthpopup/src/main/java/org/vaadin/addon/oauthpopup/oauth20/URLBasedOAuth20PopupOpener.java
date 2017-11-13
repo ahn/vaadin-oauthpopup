@@ -1,6 +1,6 @@
 package org.vaadin.addon.oauthpopup.oauth20;
 
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
 import org.vaadin.addon.oauthpopup.oauth10a.OAuth10aPopupUIImpl;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
@@ -26,7 +26,7 @@ public class URLBasedOAuth20PopupOpener extends OAuth20PopupOpenerImpl {
   // Mimic the url created in BrowserWindowOpener#generateUIClassUrl
   public static final String UI_URL = "popup/OAuthPopupUI";
 
-  public URLBasedOAuth20PopupOpener(DefaultApi20 api, OAuthPopupConfigAbstract config) {
+  public URLBasedOAuth20PopupOpener(DefaultApi20 api, OAuthPopupConfig config) {
     super(api, config, UI_URL);
   }
 }

@@ -1,8 +1,8 @@
 package org.vaadin.addon.oauthpopup.oauth20;
 
 import org.vaadin.addon.oauthpopup.base.OAuthListener;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupButtonAbstract;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupButton;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuth20Service;
@@ -35,7 +35,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  * </p>
  *
  */
-public class OAuth20PopupButtonImpl extends OAuthPopupButtonAbstract<OAuth20Service, DefaultApi20> {
+public class OAuth20PopupButtonImpl extends OAuthPopupButton<OAuth20Service, DefaultApi20> {
   private static final long serialVersionUID = 1L;
 
   /**
@@ -56,7 +56,7 @@ public class OAuth20PopupButtonImpl extends OAuthPopupButtonAbstract<OAuth20Serv
    * @param config OAuth configuration for the particular service.
    */
   public OAuth20PopupButtonImpl(DefaultApi20 api,
-      OAuthPopupConfigAbstract oAuthPopupConfigAbstract) {
+      OAuthPopupConfig oAuthPopupConfigAbstract) {
     super(new OAuth20PopupOpenerImpl(api, oAuthPopupConfigAbstract));
   }
 
@@ -68,7 +68,7 @@ public class OAuth20PopupButtonImpl extends OAuthPopupButtonAbstract<OAuth20Serv
    * @param config OAuth configuration for the particular service.
    * @param url The url/path on which our UI instance is listening
    */
-  public OAuth20PopupButtonImpl(DefaultApi20 api, OAuthPopupConfigAbstract config, String url) {
+  public OAuth20PopupButtonImpl(DefaultApi20 api, OAuthPopupConfig config, String url) {
     super(new OAuth20PopupOpenerImpl(api, config, url));
   }
 

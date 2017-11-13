@@ -24,7 +24,7 @@ public interface OAuthListener {
   /**
    * Called when the OAuth was denied. The {@code reason} for authorization failure is the value of
    * the URI query parameter value related to the key specified by
-   * {@link OAuthPopupConfigAbstract#getErrorParameterName()}. A generic error message is retured if
+   * {@link OAuthPopupConfig#getErrorParameterName()}. A generic error message is retured if
    * the query parameter was not found.
    *
    * @param reason The reason for OAuth authorization failure.

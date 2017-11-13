@@ -8,14 +8,13 @@ import com.vaadin.ui.UI;
 /**
  * UI that redirects the user to OAuth authorization url.
  * <p>
- * Should always be opened by {@link OAuthPopupButtonAbstract}.
+ * Should always be opened by {@link OAuthPopupButton}.
  * <p>
  * Reads the {@link OAuthData} instance from session. The name of the session variable must be given
  * as URI parameter named "data".
  */
 @SuppressWarnings("serial")
-public abstract class OAuthPopupUIAbstract<S extends OAuthService, T extends BaseApi<S>>
-    extends UI {
+public abstract class OAuthPopupUI<S extends OAuthService, T extends BaseApi<S>>    extends UI {
 
   public static final String DATA_PARAM_NAME = "data";
 

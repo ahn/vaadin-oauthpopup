@@ -116,9 +116,9 @@ public interface OAuthCallbackInjector {
 	// This injector doesn't modify the callback URI, it relies on the Scribe library to set the "state" query parameter
 	public class OAuth2StateInjector implements OAuthCallbackInjector {
 
-		private OAuthPopupConfigAbstract config;
+		private OAuthPopupConfig config;
 		
-		public OAuth2StateInjector(OAuthPopupConfigAbstract config) {
+		public OAuth2StateInjector(OAuthPopupConfig config) {
 			this.config = config;
 		}
 		

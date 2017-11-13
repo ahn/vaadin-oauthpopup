@@ -1,6 +1,6 @@
 package org.vaadin.addon.oauthpopup.oauth20;
 
-import org.vaadin.addon.oauthpopup.base.OAuthCallbackRequestHandlerAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthCallbackRequestHandler;
 import org.vaadin.addon.oauthpopup.base.OAuthDataAbstract;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
@@ -14,7 +14,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  */
 @SuppressWarnings("serial")
 public class OAuth20CallbackRequestHandlerImpl
-    extends OAuthCallbackRequestHandlerAbstract<OAuth20Service, DefaultApi20> {
+    extends OAuthCallbackRequestHandler<OAuth20Service, DefaultApi20> {
 
   /**
    * Only handles request that match the data id.

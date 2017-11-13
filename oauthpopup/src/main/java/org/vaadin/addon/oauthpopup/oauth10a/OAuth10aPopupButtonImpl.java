@@ -1,8 +1,8 @@
 package org.vaadin.addon.oauthpopup.oauth10a;
 
 import org.vaadin.addon.oauthpopup.base.OAuthListener;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupButtonAbstract;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupButton;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
 
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.oauth.OAuth10aService;
@@ -35,17 +35,19 @@ import com.github.scribejava.core.oauth.OAuth10aService;
  * </p>
  *
  */
-public class OAuth10aPopupButtonImpl
-    extends OAuthPopupButtonAbstract<OAuth10aService, DefaultApi10a> {
+public class OAuth10aPopupButtonImpl extends OAuthPopupButton<OAuth10aService, DefaultApi10a> {
   private static final long serialVersionUID = 1L;
 
 
   /**
    * Create a new OAuth popup button for an OAuth 1.0a service.
    *
-   * @param api The ScribeJava OAuth 1.0a API singleton instance.
-   * @param apiKey The client API key for the OAuth service.
-   * @param apiSecret The client API secret for the OAuth service.
+   * @param api
+   *        The ScribeJava OAuth 1.0a API singleton instance.
+   * @param apiKey
+   *        The client API key for the OAuth service.
+   * @param apiSecret
+   *        The client API secret for the OAuth service.
    */
   public OAuth10aPopupButtonImpl(DefaultApi10a api, String apiKey, String apiSecret) {
     this(api, OAuth10aPopupConfigImpl.getStandardOAuthConfig(apiKey, apiSecret));
@@ -54,11 +56,12 @@ public class OAuth10aPopupButtonImpl
   /**
    * Create a new OAuth popup button for an OAuth 1.0a service.
    *
-   * @param api The ScribeJava OAuth 1.0a API singleton instance.
-   * @param oAuthPopupConfigAbstract OAuth configuration for the particular service.
+   * @param api
+   *        The ScribeJava OAuth 1.0a API singleton instance.
+   * @param oAuthPopupConfigAbstract
+   *        OAuth configuration for the particular service.
    */
-  public OAuth10aPopupButtonImpl(DefaultApi10a api,
-      OAuthPopupConfigAbstract oAuthPopupConfigAbstract) {
+  public OAuth10aPopupButtonImpl(DefaultApi10a api, OAuthPopupConfig oAuthPopupConfigAbstract) {
     super(new OAuth10aPopupOpenerImpl(api, oAuthPopupConfigAbstract));
   }
 

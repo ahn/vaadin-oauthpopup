@@ -32,20 +32,20 @@ import com.vaadin.ui.Button;
  * </p>
  *
  */
-public abstract class OAuthPopupButtonAbstract<S extends OAuthService, T extends BaseApi<S>>
+public abstract class OAuthPopupButton<S extends OAuthService, T extends BaseApi<S>>
     extends Button {
 
   private static final long serialVersionUID = -3227617699696740673L;
 
-  private final OAuthPopupOpenerAbstract<S, T> opener;
+  private final OAuthPopupOpener<S, T> opener;
 
 
   /**
-   * Create a new OAuth popup button with an already created {@link OAuthPopupOpenerAbstract}
+   * Create a new OAuth popup button with an already created {@link OAuthPopupOpener}
    *
    * @param opener
    */
-  public OAuthPopupButtonAbstract(OAuthPopupOpenerAbstract<S, T> popupOpener) {
+  public OAuthPopupButton(OAuthPopupOpener<S, T> popupOpener) {
     opener = popupOpener;
     opener.extend(this);
   }
@@ -55,7 +55,7 @@ public abstract class OAuthPopupButtonAbstract<S extends OAuthService, T extends
    *
    * @return OAuth configuration
    */
-  public OAuthPopupConfigAbstract getOAuthPopupConfig() {
+  public OAuthPopupConfig getOAuthPopupConfig() {
     return opener.getOAuthPopupConfig();
   }
 

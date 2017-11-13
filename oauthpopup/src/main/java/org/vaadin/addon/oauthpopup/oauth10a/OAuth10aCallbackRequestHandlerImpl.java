@@ -1,6 +1,6 @@
 package org.vaadin.addon.oauthpopup.oauth10a;
 
-import org.vaadin.addon.oauthpopup.base.OAuthCallbackRequestHandlerAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthCallbackRequestHandler;
 import org.vaadin.addon.oauthpopup.base.OAuthDataAbstract;
 
 import com.github.scribejava.core.builder.api.DefaultApi10a;
@@ -15,7 +15,7 @@ import com.github.scribejava.core.oauth.OAuth10aService;
  */
 @SuppressWarnings("serial")
 public class OAuth10aCallbackRequestHandlerImpl
-    extends OAuthCallbackRequestHandlerAbstract<OAuth10aService, DefaultApi10a> {
+    extends OAuthCallbackRequestHandler<OAuth10aService, DefaultApi10a> {
 
   private final Token requestToken;
 

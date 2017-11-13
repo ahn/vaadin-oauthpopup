@@ -35,13 +35,13 @@ public abstract class OAuthDataAbstract<S extends OAuthService, T extends BaseAp
   private final List<OAuthListener> listeners = new CopyOnWriteArrayList<>();
 
   protected final T api;
-  protected final OAuthPopupConfigAbstract config;
+  protected final OAuthPopupConfig config;
 
   private final String id;
   private Token accessToken;
   protected OAuthService service;
 
-  protected OAuthDataAbstract(T api, OAuthPopupConfigAbstract config) {
+  protected OAuthDataAbstract(T api, OAuthPopupConfig config) {
     this.id = nextId();
     this.api = api;
     this.config = config;
@@ -78,7 +78,7 @@ public abstract class OAuthDataAbstract<S extends OAuthService, T extends BaseAp
    *
    * @return OAuth configuration
    */
-  public OAuthPopupConfigAbstract getOAuthPopupConfig() {
+  public OAuthPopupConfig getOAuthPopupConfig() {
     return config;
   }
 

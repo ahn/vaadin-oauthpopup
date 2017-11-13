@@ -1,7 +1,7 @@
 package org.vaadin.addon.oauthpopup.oauth20;
 
 import org.vaadin.addon.oauthpopup.base.OAuthCallbackInjector;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
 
 import com.github.scribejava.core.model.SignatureType;
 
@@ -13,7 +13,7 @@ import com.github.scribejava.core.model.SignatureType;
  * @author Joao Martins
  *
  */
-public class OAuth20PopupConfigImpl extends OAuthPopupConfigAbstract {
+public class OAuth20PopupConfigImpl extends OAuthPopupConfig {
 
   protected OAuth20PopupConfigImpl(String apiKey, String apiSecret) {
     super(apiKey, apiSecret);
@@ -26,8 +26,8 @@ public class OAuth20PopupConfigImpl extends OAuthPopupConfigAbstract {
    * @param apiSecret The client API secret for the OAuth service.
    * @return A pre-configured OAuth configuration object.
    */
-  public static OAuthPopupConfigAbstract getStandardOAuthConfig(String apiKey, String apiSecret) {
-    final OAuthPopupConfigAbstract config =
+  public static OAuthPopupConfig getStandardOAuthConfig(String apiKey, String apiSecret) {
+    final OAuthPopupConfig config =
         new OAuth20PopupConfigImpl(apiKey, apiSecret).setCallbackParameterName("redirect_uri")
             .setVerifierParameterName("code").setResponseType("code")
             .setSignatureType(SignatureType.QueryString).setErrorParameterName("error");

@@ -1,7 +1,7 @@
 package org.vaadin.addon.oauthpopup.oauth20;
 
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupOpenerAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupOpener;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuth20Service;
@@ -14,7 +14,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  *
  */
 @SuppressWarnings("serial")
-public class OAuth20PopupOpenerImpl extends OAuthPopupOpenerAbstract<OAuth20Service, DefaultApi20> {
+public class OAuth20PopupOpenerImpl extends OAuthPopupOpener<OAuth20Service, DefaultApi20> {
 
   /**
    * Create a new OAuth popup opener for an OAuth 2.0 service.
@@ -33,11 +33,11 @@ public class OAuth20PopupOpenerImpl extends OAuthPopupOpenerAbstract<OAuth20Serv
    * @param api The ScribeJava OAuth 2.0 API singleton instance.
    * @param config OAuth configuration for the particular service.
    */
-  public OAuth20PopupOpenerImpl(DefaultApi20 api, OAuthPopupConfigAbstract config) {
+  public OAuth20PopupOpenerImpl(DefaultApi20 api, OAuthPopupConfig config) {
     super(api, new OAuth20DataImpl(api, config), OAuth20PopupUIImpl.class);
   }
 
-  public OAuth20PopupOpenerImpl(DefaultApi20 api, OAuthPopupConfigAbstract config, String url) {
+  public OAuth20PopupOpenerImpl(DefaultApi20 api, OAuthPopupConfig config, String url) {
     super(api, new OAuth20DataImpl(api, config), url);
   }
 

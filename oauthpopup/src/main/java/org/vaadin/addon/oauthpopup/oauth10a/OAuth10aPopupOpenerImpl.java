@@ -1,7 +1,7 @@
 package org.vaadin.addon.oauthpopup.oauth10a;
 
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupOpenerAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupOpener;
 
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.oauth.OAuth10aService;
@@ -15,7 +15,7 @@ import com.github.scribejava.core.oauth.OAuth10aService;
  */
 @SuppressWarnings("serial")
 public class OAuth10aPopupOpenerImpl
-    extends OAuthPopupOpenerAbstract<OAuth10aService, DefaultApi10a> {
+    extends OAuthPopupOpener<OAuth10aService, DefaultApi10a> {
 
   /**
    * Create a new OAuth popup opener for an OAuth 1.0a service.
@@ -34,7 +34,7 @@ public class OAuth10aPopupOpenerImpl
    * @param api The ScribeJava OAuth 1.0a API singleton instance.
    * @param config OAuth configuration for the particular service.
    */
-  public OAuth10aPopupOpenerImpl(DefaultApi10a api, OAuthPopupConfigAbstract config) {
+  public OAuth10aPopupOpenerImpl(DefaultApi10a api, OAuthPopupConfig config) {
     super(api, new OAuth10aDataImpl(api, config), OAuth10aPopupUIImpl.class);
   }
 

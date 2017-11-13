@@ -24,7 +24,7 @@ import com.vaadin.server.Page;
  * @author Bryson Dunn
  *
  */
-public abstract class OAuthPopupConfigAbstract {
+public abstract class OAuthPopupConfig {
 
   // Set by user, or defaulted
   private final String apiKey;
@@ -48,7 +48,7 @@ public abstract class OAuthPopupConfigAbstract {
   // Set by OAuthData
   private String state;
 
-  protected OAuthPopupConfigAbstract(String apiKey, String apiSecret) {
+  protected OAuthPopupConfig(String apiKey, String apiSecret) {
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
     initializeCallbackUrl();
@@ -127,7 +127,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param scope The OAuth scope parameter.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setScope(String scope) {
+  public OAuthPopupConfig setScope(String scope) {
     this.scope = scope;
     return this;
   }
@@ -148,7 +148,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param responseType The OAuth response type parameter.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setResponseType(String responseType) {
+  public OAuthPopupConfig setResponseType(String responseType) {
     this.responseType = responseType;
     return this;
   }
@@ -169,7 +169,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param callbackParameterName The callback query parameter name.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setCallbackParameterName(String callbackParameterName) {
+  public OAuthPopupConfig setCallbackParameterName(String callbackParameterName) {
     this.callbackParameterName = callbackParameterName;
     return this;
   }
@@ -198,7 +198,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param callbackUrl The callback URL.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setCallbackUrl(String callbackUrl) {
+  public OAuthPopupConfig setCallbackUrl(String callbackUrl) {
     this.callbackUrl = callbackUrl;
     return this;
   }
@@ -210,7 +210,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param verifierParameterName The verifier query parameter name.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setVerifierParameterName(String verifierParameterName) {
+  public OAuthPopupConfig setVerifierParameterName(String verifierParameterName) {
     this.verifierParameterName = verifierParameterName;
     return this;
   }
@@ -230,7 +230,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param signatureType The signature type.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setSignatureType(SignatureType signatureType) {
+  public OAuthPopupConfig setSignatureType(SignatureType signatureType) {
     this.signatureType = signatureType;
     return this;
   }
@@ -251,7 +251,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param connectTimeout The connection timeout value.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setConnectTimeout(Integer connectTimeout) {
+  public OAuthPopupConfig setConnectTimeout(Integer connectTimeout) {
     this.connectTimeout = connectTimeout;
     return this;
   }
@@ -271,7 +271,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param connectTimeout The read timeout value.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setReadTimeout(Integer readTimeout) {
+  public OAuthPopupConfig setReadTimeout(Integer readTimeout) {
     this.readTimeout = readTimeout;
     return this;
   }
@@ -291,7 +291,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param connectTimeout The user agent value.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setUserAgent(String userAgent) {
+  public OAuthPopupConfig setUserAgent(String userAgent) {
     this.userAgent = userAgent;
     return this;
   }
@@ -314,7 +314,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @return The callback injector.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setCallbackInjector(OAuthCallbackInjector callbackInjector) {
+  public OAuthPopupConfig setCallbackInjector(OAuthCallbackInjector callbackInjector) {
     this.callbackInjector = callbackInjector;
     return this;
   }
@@ -335,7 +335,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param state The OAuth state parameter.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  protected OAuthPopupConfigAbstract setState(String state) {
+  protected OAuthPopupConfig setState(String state) {
     this.state = state;
     return this;
   }
@@ -355,7 +355,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param outputStream An output stream.
    * @return The {@code OAuthPopupConfig} instance.
    */
-  public OAuthPopupConfigAbstract setDebugStream(OutputStream debugStream) {
+  public OAuthPopupConfig setDebugStream(OutputStream debugStream) {
     this.debugStream = debugStream;
     return this;
   }
@@ -377,7 +377,7 @@ public abstract class OAuthPopupConfigAbstract {
    * @param errorParameterName
    * @return
    */
-  public OAuthPopupConfigAbstract setErrorParameterName(String errorParameterName) {
+  public OAuthPopupConfig setErrorParameterName(String errorParameterName) {
     this.errorParameterName = errorParameterName;
     return this;
   }

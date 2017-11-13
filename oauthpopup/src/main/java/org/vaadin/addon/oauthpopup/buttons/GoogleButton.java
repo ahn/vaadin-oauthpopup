@@ -1,6 +1,6 @@
 package org.vaadin.addon.oauthpopup.buttons;
 
-import org.vaadin.addon.oauthpopup.base.OAuthPopupButtonAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupButton;
 import org.vaadin.addon.oauthpopup.oauth20.OAuth20PopupButtonImpl;
 import org.vaadin.addon.oauthpopup.oauth20.OAuth20PopupConfigImpl;
 
@@ -15,7 +15,7 @@ import com.vaadin.server.ClassResource;
 public class GoogleButton extends OAuth20PopupButtonImpl {
 
   /**
-   * Vaadin {@link OAuthPopupButtonAbstract} used to initiate OAuth authorization of Google API
+   * Vaadin {@link OAuthPopupButton} used to initiate OAuth authorization of Google API
    * services.
    * 
    * @param key Google API client ID.

@@ -3,7 +3,7 @@ package org.vaadin.addon.oauthpopup.oauth10a;
 import java.io.IOException;
 
 import org.vaadin.addon.oauthpopup.base.OAuthDataAbstract;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupConfigAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupConfig;
 
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.exceptions.OAuthException;
@@ -23,7 +23,7 @@ import com.github.scribejava.core.oauth.OAuth10aService;
  */
 public class OAuth10aDataImpl extends OAuthDataAbstract<OAuth10aService, DefaultApi10a> {
 
-  protected OAuth10aDataImpl(DefaultApi10a api, OAuthPopupConfigAbstract config) {
+  protected OAuth10aDataImpl(DefaultApi10a api, OAuthPopupConfig config) {
     super(api, config);
   }
 

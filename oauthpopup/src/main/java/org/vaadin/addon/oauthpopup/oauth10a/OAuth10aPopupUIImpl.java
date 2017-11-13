@@ -1,8 +1,8 @@
 package org.vaadin.addon.oauthpopup.oauth10a;
 
 import org.vaadin.addon.oauthpopup.base.OAuthDataAbstract;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupButtonAbstract;
-import org.vaadin.addon.oauthpopup.base.OAuthPopupUIAbstract;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupButton;
+import org.vaadin.addon.oauthpopup.base.OAuthPopupUI;
 
 import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.model.Token;
@@ -12,13 +12,13 @@ import com.vaadin.server.Page;
 /**
  * UI that redirects the user to OAuth authorization url.
  * <p>
- * Should always be opened by {@link OAuthPopupButtonAbstract}.
+ * Should always be opened by {@link OAuthPopupButton}.
  * <p>
  * Reads the {@link OAuthData} instance from session. The name of the session variable must be given
  * as URI parameter named "data".
  */
 @SuppressWarnings("serial")
-public class OAuth10aPopupUIImpl extends OAuthPopupUIAbstract<OAuth10aService, DefaultApi10a> {
+public class OAuth10aPopupUIImpl extends OAuthPopupUI<OAuth10aService, DefaultApi10a> {
 
   private OAuth10aCallbackRequestHandlerImpl callbackHandler;
 

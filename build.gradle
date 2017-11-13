@@ -1,19 +1,19 @@
 apply plugin: 'base'
 apply plugin: 'maven-publish'
 
-def vaadinVersion = '8.0.6'
+def vaadinVersion = '8.1.6'
 ext.vaadinVersion = vaadinVersion
 def scribeVersion = '2.7.3'
 ext.scribeVersion = scribeVersion
 
 task wrapper(type: Wrapper) {
-   gradleVersion = '3.5'
+   gradleVersion = '4.3.1'
 }
 
 allprojects {
 	apply plugin: 'java'
 	group = 'org.vaadin.addon.oauthpopup'
-	version = '1.0.1'
+	version = '1.0.3'
 	
 	javadoc {
 		enabled = false;
@@ -85,16 +85,18 @@ project(':oauthpopup') {
 							'Implementation-Vendor': 'Bryson Dunn',
 							'Vaadin-Package-Version': '1'
 							
+		from(sourceSets.main.java)
 		from(sourceSets.main.output)
 		from(sourceSets.main.allSource)
 		into('META-INF/maven/' + project.group + '/' + project.name) {
 			from(file("$buildDir/pom.xml"))
 		}
 	}
-	
+
 	jar.dependsOn('generatePomFileForVaadinDirectoryPublication')
 	
 	artifacts {
 		archives jar
 	}
 }
+

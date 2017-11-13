@@ -16,7 +16,7 @@ import com.vaadin.ui.UI;
  *
  */
 @SuppressWarnings("serial")
-public abstract class OAuthPopupOpenerAbstract<S extends OAuthService, T extends BaseApi<S>>
+public abstract class OAuthPopupOpener<S extends OAuthService, T extends BaseApi<S>>
     extends BrowserWindowOpener {
 
   private final LinkedList<OAuthListener> listeners = new LinkedList<>();
@@ -30,13 +30,13 @@ public abstract class OAuthPopupOpenerAbstract<S extends OAuthService, T extends
    * @param api The ScribeJava OAuth API singleton instance.
    * @param config OAuth configuration for the particular service.
    */
-  public OAuthPopupOpenerAbstract(T api, OAuthDataAbstract<S, T> oAuthData,
+  public OAuthPopupOpener(T api, OAuthDataAbstract<S, T> oAuthData,
       Class<? extends UI> uiClass) {
     super(uiClass);
     this.data = oAuthData;
   }
 
-  public OAuthPopupOpenerAbstract(T api, OAuthDataAbstract<S, T> oAuthData, String url) {
+  public OAuthPopupOpener(T api, OAuthDataAbstract<S, T> oAuthData, String url) {
     super(url);
     this.data = oAuthData;
   }
@@ -46,7 +46,7 @@ public abstract class OAuthPopupOpenerAbstract<S extends OAuthService, T extends
    *
    * @return OAuth configuration
    */
-  public OAuthPopupConfigAbstract getOAuthPopupConfig() {
+  public OAuthPopupConfig getOAuthPopupConfig() {
     return data.getOAuthPopupConfig();
   }
 
@@ -79,7 +79,7 @@ public abstract class OAuthPopupOpenerAbstract<S extends OAuthService, T extends
     // Adding the session attribute.
     final String attr = data.getSessionAttributeName();
     getSession().setAttribute(attr, data);
-    setParameter(OAuthPopupUIAbstract.DATA_PARAM_NAME, attr);
+    setParameter(OAuthPopupUI.DATA_PARAM_NAME, attr);
 
     dataListener = new OAuthListener() {
       @Override
